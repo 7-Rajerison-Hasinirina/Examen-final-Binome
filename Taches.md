@@ -155,33 +155,10 @@ Views:
     - ClientOffice.php
     - OperateurOffice.php
 
-----------dans ClientOffice:( on recupere le id_user ici )
-on doit y avoir:
-1)  Affichage nom 
-2) Affichage de son numero ( dans  numero_user) 
-- NumeroUserModel.php 
-    -> findAll
-    -> findByIdUser($id_user)
 
 ====
 FINI
 ====
 
-- NumeroUserController -> on doita avoir une methode permeetant de recuperer le numero vai formiulaire 
-- affichge de type d'operation ( via table type_operation)
-TypeOperationModel.php
-    -> findAll()
-    -> findById($id)
 
-on a deja un exemplaire de layout ( mais enlever tout en remplaçant par les boutosn suivants )
-- Voir le solde
-- Faire un retrait
-- faire un transfert
-- voir les historiques
-- deconnexion 
-
-
-
-- N'oublie pas les routes pour chaque bouton ( dans Routes.php ) et les methodes correspondantes dans ClientOfficeController.php
-on a deja un exmeplaire pour ces routes 
 

@@ -11,6 +11,12 @@ $routes->post('login/valider', 'OperateurController::valider');
 
 // Routes pour Client Office
 $routes->get('client-office', 'ClientOfficeController::index');
+$routes->get('client-office/solde', 'ClientOfficeController::solde');
+$routes->get('client-office/retrait', 'ClientOfficeController::retrait');
+$routes->post('client-office/retrait/traiter', 'ClientOfficeController::traiterRetrait');
+$routes->get('client-office/transfert', 'ClientOfficeController::transfert');
+$routes->post('client-office/transfert/traiter', 'ClientOfficeController::traiterTransfert');
+$routes->get('client-office/historique', 'ClientOfficeController::historique');
 $routes->get('client-office/logout', 'ClientOfficeController::logout');
 
 // Routes pour Opérateur Office
