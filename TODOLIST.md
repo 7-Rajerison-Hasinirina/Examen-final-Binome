@@ -64,6 +64,3 @@
         - si non: 
             - inserer le numero dans la table numero_user
             - inserer l'id du prefixe, l'id du numero, l'id de l'utilisateur et la date de creation automatique
-
-
-creation de tag:

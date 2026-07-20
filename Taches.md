@@ -129,7 +129,7 @@ FINI
 ====
         
 
-## Taches 5: Creation de la page ClientOffice.php ETU03962
+## Taches 5: Creation de la page ClientOffice.php
 
 
 - Validation apres login:  ( auto-login)
@@ -164,7 +164,7 @@ FINI
 ====
 
 
-## Taches 6: Fonctionnalite Voir solde actuel: ETU004246
+## Taches 6: Fonctionnalite Voir solde actuel:
 - Dans ClientOfficeController.php
 - Methodes a creer:
     - getSoldeActuel($id_user)
@@ -173,38 +173,6 @@ FINI
     - getHistoriqueOperations($id_user)
         - recuperer l'historique des operations du client via l'id_user
         - retourner l'historique des operations
-
-
-
-
-## Taches 7: Fonctionnalite Cote Operateur: ETU003962
-- on va ajouter des bloc 
-    - COTE OPERATEUR:
-        - Configuration de Prefixes:
-            - 033
-            - 037 
-        + ajout , modification / affichge sous forme de tableau 
-
-        - Creation de types d'operations
-            - depot
-            - retrait
-            - transfert 
-            + bareme de frais 
-        * ajout , modification / affichge sous forme de tableau + filtre pour chaque type d'operation et operateur
-
-        - Situation gain via les differents
-            - ex: retrait 1000 Ar, frais 50 Ar ( modifiable ) -> gain : 50 Ar
-        ( on affiche rien , on attend )
-
-        - Situation des comptes clients
-            - Clients: 
-            - Reference
-            - Solde actuel
-
-on touche uniquement les fichiers:
-OperateurOfficeController.php
-OperateurModel.php 
-OperateurOffice.php ( le views )
 
 
 

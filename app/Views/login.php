@@ -279,7 +279,8 @@
         <div class="login-info">
             <i class="fas fa-info-circle"></i>
             <strong>Premier accès ?</strong><br>
-            Créez automatiquement un compte en saisissant vos informations pour la première fois.
+            <p> Rakoto Jean, 034, 2222222  </p>
+            <p> Yas, 038, 7654321  </p>
         </div>
     </div>
 </div>
