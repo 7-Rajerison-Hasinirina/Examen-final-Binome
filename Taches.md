@@ -99,7 +99,7 @@ FINI
 ====
 
 ## Taches 4: ETU004246
-- Validation apres login: 
+- Validation apres login:  ( auto-login)
     - Verification via login.php:
         1-Si id_prefixe et numero existe deja dans numero_user:
             Si oui, si l'id_user correspond a un client ( id_role = 2 )
@@ -127,3 +127,61 @@ Views:
         
 
 ## Taches 5: Creation de la page ClientOffice.php
+
+
+- Validation apres login:  ( auto-login)
+    - Verification via login.php:
+        1-Si id_prefixe et numero existe deja dans numero_user:
+            Si oui, si l'id_user correspond a un client ( id_role = 2 )
+                -> redirection vers ClientOffice.php
+            Si oui, si l'id_user correspond a un operateur ( id_role = 3 )
+                -> redirection vers OperateurOffice.php
+        2-Sinon, 
+            -> inserer dans users
+                - nom ( le nom via formulaire)
+                - id_role : 2
+            -> inserer dans numero_user
+                - id_prefixe ( via formulaire )
+                - numero ( via formulaire )
+                - id_user ( via users )
+                - date_creation ( automatique )
+Controller:
+    - OperateurController.php:
+        - index() -> login.php
+        - authentifier() 
+            -> ClientOffice.php ou OperateurOffice.php
+
+Views:
+    - ClientOffice.php
+    - OperateurOffice.php
+
+----------dans ClientOffice:( on recupere le id_user ici )
+on doit y avoir:
+1)  Affichage nom 
+2) Affichage de son numero ( dans  numero_user) 
+- NumeroUserModel.php 
+    -> findAll
+    -> findByIdUser($id_user)
+
+====
+FINI
+====
+
+- NumeroUserController -> on doita avoir une methode permeetant de recuperer le numero vai formiulaire 
+- affichge de type d'operation ( via table type_operation)
+TypeOperationModel.php
+    -> findAll()
+    -> findById($id)
+
+on a deja un exemplaire de layout ( mais enlever tout en remplaçant par les boutosn suivants )
+- Voir le solde
+- Faire un retrait
+- faire un transfert
+- voir les historiques
+- deconnexion 
+
+
+
+- N'oublie pas les routes pour chaque bouton ( dans Routes.php ) et les methodes correspondantes dans ClientOfficeController.php
+on a deja un exmeplaire pour ces routes 
+

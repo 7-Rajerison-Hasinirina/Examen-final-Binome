@@ -7,6 +7,16 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 $routes->get('/', 'OperateurController::index');
+$routes->post('login/valider', 'OperateurController::valider');
+
+// Routes pour Client Office
+$routes->get('client-office', 'ClientOfficeController::index');
+$routes->get('client-office/logout', 'ClientOfficeController::logout');
+
+// Routes pour Opérateur Office
+$routes->get('operateur-office', 'OperateurOfficeController::index');
+$routes->get('operateur-office/logout', 'OperateurOfficeController::logout');
+
 // $routes->post('login/authentifier', 'GestionUser::authentifier');
 // $routes->get('logout', 'GestionUser::deconnexion');
 // $routes->get('inscription', 'GestionUser::inscription');
