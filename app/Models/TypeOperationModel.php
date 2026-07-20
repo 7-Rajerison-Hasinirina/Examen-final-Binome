@@ -36,4 +36,16 @@ class TypeOperationModel extends Model
     {
         return $this->find($id);
     }
+
+    public function getOperationByLibelle(string $libelle): ?array
+    {
+        return $this->where('libelle', $libelle)->first();
+    }
+
+    public function getOperationIdByLibelle(string $libelle): ?int
+    {
+        $operation = $this->getOperationByLibelle($libelle);
+
+        return $operation ? (int) $operation['id'] : null;
+    }
 }

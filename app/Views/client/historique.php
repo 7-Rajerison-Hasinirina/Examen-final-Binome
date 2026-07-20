@@ -1,262 +1,159 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Historique') ?> | Mobile Money</title>
-    <link rel="stylesheet" href="<?= base_url('assets/bootstrap/css/bootstrap.min.css') ?>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-dark: #1a3a52;
-            --primary: #2c5aa0;
-            --accent: #00d4ff;
-            --bg: #0f2438;
-            --bg-light: #1a3a52;
-            --text: #ffffff;
-            --text-muted: #b0bec5;
-        }
+<?= $this->extend('client/layout') ?>
 
-        body {
-            background: #ffffff;
-            color: #333333;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-        }
+<?= $this->section('content') ?>
+<style>
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
 
-        .navbar {
-            background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 100%);
-            border-bottom: 3px solid var(--accent);
-        }
+    .header-row h2 {
+        margin: 0;
+        color: var(--primary-dark);
+    }
 
-        .navbar-brand {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--accent) !important;
-        }
+    .balance-pill {
+        padding: 1rem 1.1rem;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(0, 168, 107, 0.09), rgba(0, 212, 255, 0.09));
+        border: 1px solid rgba(36, 74, 134, 0.12);
+        min-width: 220px;
+    }
 
-        .page-header {
-            padding: 2rem;
-            background: #e3f2fd;
-            border-bottom: 2px solid var(--primary);
-            margin-bottom: 2rem;
-        }
+    .balance-pill .label {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
 
-        .page-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+    .balance-pill .value {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--success);
+    }
 
-        .page-subtitle {
-            color: #666666;
-            font-size: 0.95rem;
-            margin-top: 0.5rem;
-        }
+    .table-wrap {
+        overflow-x: auto;
+        border-radius: 18px;
+        border: 1px solid rgba(36, 74, 134, 0.12);
+    }
 
-        .content-card {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
 
-        .table-wrapper {
-            overflow-x: auto;
-        }
+    thead th {
+        text-align: left;
+        padding: 0.95rem;
+        background: #eef5ff;
+        color: var(--primary-dark);
+        border-bottom: 1px solid rgba(36, 74, 134, 0.12);
+        white-space: nowrap;
+    }
 
-        .table {
-            margin-bottom: 0;
-        }
+    tbody td {
+        padding: 0.95rem;
+        border-bottom: 1px solid rgba(36, 74, 134, 0.08);
+        white-space: nowrap;
+    }
 
-        .table thead th {
-            background: #e3f2fd;
-            border-color: #90caf9;
-            color: var(--primary);
-            font-weight: 600;
-            border-top: none;
-        }
+    tbody tr:hover {
+        background: rgba(0, 212, 255, 0.04);
+    }
 
-        .table tbody td {
-            border-color: rgba(255, 255, 255, 0.1);
-            vertical-align: middle;
-        }
+    .tag-in {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(0, 168, 107, 0.12);
+        color: #0f7a50;
+        font-weight: 700;
+    }
 
-        .table tbody tr {
-            transition: background-color 0.3s ease;
-        }
+    .tag-out {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(224, 86, 86, 0.12);
+        color: #b53d3d;
+        font-weight: 700;
+    }
 
-        .table tbody tr:hover {
-            background-color: rgba(0, 212, 255, 0.05);
-        }
+    .empty-state {
+        padding: 2rem 1rem;
+        text-align: center;
+        color: var(--text-muted);
+    }
+</style>
 
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-        }
-
-        .empty-icon {
-            font-size: 4rem;
-            color: var(--text-muted);
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        .empty-text {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        .badge-pending {
-            background: rgba(255, 165, 0, 0.2);
-            color: #ffa500;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .badge-completed {
-            background: rgba(0, 208, 132, 0.2);
-            color: #00d084;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .badge-failed {
-            background: rgba(255, 107, 107, 0.2);
-            color: #ff6b6b;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .btn-back {
-            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
-            border: none;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
-            text-decoration: none;
-            color: white;
-        }
-
-        .montant-depot {
-            color: #00d084;
-            font-weight: 600;
-        }
-
-        .montant-retrait {
-            color: #ff6b6b;
-            font-weight: 600;
-        }
-
-        .montant-transfert {
-            color: var(--accent);
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="<?= base_url('/') ?>">
-                <i class="fas fa-coins"></i> Mobile Money
-            </a>
-        </div>
-    </nav>
-
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="page-title">
-            <i class="fas fa-history"></i> <?= esc($title) ?>
-        </div>
-        <div class="page-subtitle">Consultez vos opérations passées</div>
+<div class="header-row">
+    <div>
+        <h2>Historique du numéro actif</h2>
+        <div style="color: var(--text-muted);">Les opérations affichées concernent seulement le numéro sélectionné dans le layout.</div>
     </div>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="content-card">
-                    <?php if (empty($operations)): ?>
-                        <div class="empty-state">
-                            <div class="empty-icon">
-                                <i class="fas fa-inbox"></i>
-                            </div>
-                            <div class="empty-text">
-                                Aucune opération enregistrée pour le moment
-                            </div>
-                            <p class="text-muted" style="margin-top: 1rem;">
-                                Vos opérations apparaîtront ici une fois que vous en aurez effectuées.
-                            </p>
-                        </div>
-                    <?php else: ?>
-                        <div class="table-wrapper">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th><i class="fas fa-calendar"></i> Date</th>
-                                        <th><i class="fas fa-exchange-alt"></i> Type</th>
-                                        <th><i class="fas fa-phone"></i> Numéro</th>
-                                        <th><i class="fas fa-money-bill"></i> Montant</th>
-                                        <th><i class="fas fa-info-circle"></i> Statut</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($operations as $op): ?>
-                                        <tr>
-                                            <td><?= date('d/m/Y H:i', strtotime($op['date'])) ?></td>
-                                            <td><?= esc($op['type']) ?></td>
-                                            <td><?= esc($op['numero']) ?></td>
-                                            <td>
-                                                <span class="montant-<?= strtolower($op['type']) ?>">
-                                                    <?= number_format($op['montant'], 2, ',', ' ') ?> Ar
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="badge-completed">
-                                                    <i class="fas fa-check-circle"></i> Effectuée
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php endif; ?>
-
-                    <div style="margin-top: 2rem; text-align: center;">
-                        <a href="<?= base_url('client-office') ?>" class="btn-back">
-                            <i class="fas fa-arrow-left"></i> Retour au Tableau de Bord
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <?php if (!empty($numeroActif)): ?>
+        <div class="balance-pill">
+            <div class="label">Numéro actif</div>
+            <div style="font-weight: 800; color: var(--primary-dark);"><?= esc($numeroActif['prefixe']) ?> <?= esc($numeroActif['numero']) ?></div>
+            <div class="value"><?= number_format((float) ($numeroActif['solde'] ?? 0), 2, ',', ' ') ?> Ar</div>
         </div>
-    </div>
+    <?php endif; ?>
+</div>
 
-    <script src="<?= base_url('assets/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
-</body>
-</html>
+<?php if (empty($numeroActif)): ?>
+    <div class="empty-state">Aucun numéro n’est disponible pour afficher l’historique.</div>
+<?php elseif (empty($operations)): ?>
+    <div class="empty-state">Aucune opération pour ce numéro pour le moment.</div>
+<?php else: ?>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Montant</th>
+                    <th>Référence</th>
+                    <th>Sens</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($operations as $op): ?>
+                    <tr>
+                        <td><?= esc(date('d/m/Y H:i', strtotime($op['date']))) ?></td>
+                        <td><?= esc($op['type'] ?? '') ?></td>
+                        <td><?= esc($op['numero_source'] ?? '-') ?></td>
+                        <td><?= esc($op['numero_destination'] ?? '-') ?></td>
+                        <td><?= number_format((float) ($op['valeur'] ?? 0), 2, ',', ' ') ?> Ar</td>
+                        <td><?= esc($op['reference'] ?? '-') ?></td>
+                        <td>
+                            <?php if (($op['sens'] ?? 'entree') === 'entree'): ?>
+                                <span class="tag-in"><i class="fas fa-arrow-down"></i> Entrée</span>
+                            <?php else: ?>
+                                <span class="tag-out"><i class="fas fa-arrow-up"></i> Sortie</span>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>
+
+<div style="margin-top: 1.25rem;">
+    <a href="<?= base_url('client-office') ?>" class="pill pill-neutral"><i class="fas fa-arrow-left"></i> Retour au tableau de bord</a>
+</div>
+<?= $this->endSection() ?>

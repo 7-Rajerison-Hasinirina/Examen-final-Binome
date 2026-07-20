@@ -1,3 +1,154 @@
+<?= $this->extend('client/layout') ?>
+
+<?= $this->section('content') ?>
+<style>
+    .dashboard-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .dashboard-title h2 {
+        margin: 0;
+        font-size: 1.7rem;
+        color: var(--primary-dark);
+    }
+
+    .dashboard-title p {
+        margin: 0.35rem 0 0;
+        color: var(--text-muted);
+    }
+
+    .active-card {
+        display: grid;
+        gap: 0.25rem;
+        min-width: 240px;
+        padding: 1rem 1.1rem;
+        border-radius: 18px;
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.13), rgba(36, 74, 134, 0.09));
+        border: 1px solid rgba(36, 74, 134, 0.12);
+    }
+
+    .active-card .label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+    }
+
+    .active-card .value {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--primary-dark);
+    }
+
+    .active-card .balance {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: var(--success);
+    }
+
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        margin-top: 1.25rem;
+    }
+
+    .action-card {
+        display: grid;
+        gap: 0.8rem;
+        padding: 1.1rem;
+        border-radius: 18px;
+        border: 1px solid rgba(36, 74, 134, 0.12);
+        background: linear-gradient(180deg, #ffffff 0%, #f6faff 100%);
+        text-decoration: none;
+        color: var(--text);
+        box-shadow: 0 10px 25px rgba(18, 36, 68, 0.06);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .action-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 34px rgba(18, 36, 68, 0.10);
+        text-decoration: none;
+        color: var(--text);
+    }
+
+    .action-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        color: white;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    }
+
+    .action-title {
+        font-weight: 800;
+        color: var(--primary-dark);
+    }
+
+    .action-description {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+    }
+</style>
+
+<div class="dashboard-head">
+    <div class="dashboard-title">
+        <h2>Tableau de bord client</h2>
+        <p>Les actions s’appliquent uniquement au numéro actif sélectionné dans le layout.</p>
+    </div>
+
+    <?php if (!empty($numeroActif)): ?>
+        <div class="active-card">
+            <div class="label">Numéro actif</div>
+            <div class="value"><?= esc($numeroActif['prefixe']) ?> <?= esc($numeroActif['numero']) ?></div>
+            <div class="balance"><?= number_format((float) ($soldeActif ?? 0), 2, ',', ' ') ?> Ar</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">
+                <?= esc($numeroActif['operateur'] ?? '') ?>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+
+<div class="action-grid">
+    <a href="<?= base_url('client-office/solde') ?>" class="action-card">
+        <div class="action-icon"><i class="fas fa-wallet"></i></div>
+        <div class="action-title">Voir le solde</div>
+        <div class="action-description">Consulter le solde du numéro actif.</div>
+    </a>
+
+    <a href="<?= base_url('client-office/depot') ?>" class="action-card">
+        <div class="action-icon"><i class="fas fa-circle-plus"></i></div>
+        <div class="action-title">Faire un dépôt</div>
+        <div class="action-description">Créditer uniquement le numéro actif.</div>
+    </a>
+
+    <a href="<?= base_url('client-office/retrait') ?>" class="action-card">
+        <div class="action-icon"><i class="fas fa-money-bill-wave"></i></div>
+        <div class="action-title">Faire un retrait</div>
+        <div class="action-description">Débiter uniquement le numéro actif.</div>
+    </a>
+
+    <a href="<?= base_url('client-office/transfert') ?>" class="action-card">
+        <div class="action-icon"><i class="fas fa-right-left"></i></div>
+        <div class="action-title">Faire un transfert</div>
+        <div class="action-description">Transférer depuis le numéro actif.</div>
+    </a>
+
+    <a href="<?= base_url('client-office/historique') ?>" class="action-card">
+        <div class="action-icon"><i class="fas fa-clock-rotate-left"></i></div>
+        <div class="action-title">Historique</div>
+        <div class="action-description">Voir les opérations du numéro actif.</div>
+    </a>
+</div>
+<?= $this->endSection() ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -82,6 +233,18 @@
             border-radius: 0.75rem;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
+        }
+
+        .balance-card {
+            margin-top: 1rem;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.12) 0%, rgba(44, 90, 160, 0.10) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.25);
+        }
+
+        .balance-value {
+            color: #1a8fb5;
+            font-weight: 700;
+            font-size: 1.15rem;
         }
 
         .info-item {
@@ -271,6 +434,11 @@
     </style>
 </head>
 <body>
+    <?php
+    $flashSuccess = session()->getFlashdata('success');
+    $flashError = session()->getFlashdata('error');
+    ?>
+
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
@@ -283,7 +451,7 @@
                     <span>Bienvenue, <strong><?= esc($nom) ?></strong></span>
                 </div>
                 <a href="<?= base_url('client-office/logout') ?>" class="btn-logout">
-                    <i class="fas fa-sign-out-alt"></i> Déconnecter
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
                 </a>
             </div>
         </div>
@@ -314,6 +482,9 @@
                             <div class="numero-item">
                                 <strong><?= esc($numero['prefixe']) ?></strong> 
                                 <span><?= esc($numero['numero']) ?></span>
+                                <div style="margin-top: 0.35rem; font-size: 0.85rem; color: #666666;">
+                                    Solde : <strong style="color: #1a8fb5;"><?= number_format((float) ($numero['solde'] ?? 0), 2, ',', ' ') ?> Ar</strong>
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -338,17 +509,17 @@
             <div class="col-lg-9">
                 <div class="main-content">
                     <!-- Messages Flash -->
-                    <?php if (session()->getFlashdata('success')): ?>
+                    <?php if ($flashSuccess): ?>
                         <div class="alert alert-success" role="alert">
                             <i class="fas fa-check-circle"></i>
-                            <?= session()->getFlashdata('success') ?>
+                            <?= esc((string) $flashSuccess) ?>
                         </div>
                     <?php endif; ?>
 
-                    <?php if (session()->getFlashdata('error')): ?>
+                    <?php if ($flashError): ?>
                         <div class="alert alert-danger" role="alert">
                             <i class="fas fa-exclamation-circle"></i>
-                            <?= session()->getFlashdata('error') ?>
+                            <?= esc((string) $flashError) ?>
                         </div>
                     <?php endif; ?>
 
@@ -359,6 +530,15 @@
 
                     <!-- Action Cards -->
                     <div class="action-grid">
+                        <!-- Dépôt -->
+                        <a href="<?= base_url('client-office/depot') ?>" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-circle-plus"></i>
+                            </div>
+                            <div class="action-title">Faire un Dépôt</div>
+                            <div class="action-description">Créditez votre compte</div>
+                        </a>
+
                         <!-- Voir Solde -->
                         <a href="<?= base_url('client-office/solde') ?>" class="action-card">
                             <div class="action-icon">

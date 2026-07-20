@@ -48,6 +48,10 @@ CREATE TABLE historique_operation (
     id_user INTEGER NOT NULL,
     id_operation INTEGER NOT NULL,
     valeur DECIMAL(10,2) NOT NULL,
+    numero_source VARCHAR(20),
+    numero_destination VARCHAR(20),
+    reference VARCHAR(255),
+    sens VARCHAR(10),
     FOREIGN KEY (id_user) REFERENCES users(id),
     FOREIGN KEY (id_operation) REFERENCES type_operation(id)
 );
@@ -112,13 +116,15 @@ INSERT INTO bareme_frais (intervalle1, intervalle2, frais, id_operateur) VALUES
 (10001, 50000, 500, 4);
 
 
-INSERT INTO historique_operation (date, id_user, id_operation, valeur) VALUES
+INSERT INTO historique_operation (date, id_user, id_operation, valeur, numero_source, numero_destination, reference, sens) VALUES
 
-('2026-07-20 08:15:00', 2, 1, 5000.00),
-('2026-07-20 09:00:00', 3, 1, 10000.00),
-('2026-07-20 10:20:00', 4, 3, 3000.00),
-('2026-07-20 11:31:00', 2, 2, 5000.00),
-('2026-07-20 13:10:00', 3, 2, 2500.00),
-('2026-07-20 14:45:00', 5, 1, 15000.00),
-('2026-07-20 16:00:00', 4, 3, 7000.00),
-('2026-07-20 17:30:00', 2, 1, 20000.00);
+('2026-07-20 08:15:00', 2, 1, 5000.00, NULL, '1111112', 'Dépôt initial', 'entree'),
+('2026-07-20 09:00:00', 2, 1, 10000.00, NULL, '2222222', 'Dépôt initial', 'entree'),
+('2026-07-20 10:20:00', 2, 3, 3000.00, '1111112', '2222222', 'Transfert interne', 'sortie'),
+('2026-07-20 10:20:00', 2, 3, 3000.00, '1111112', '2222222', 'Transfert interne', 'entree'),
+('2026-07-20 11:31:00', 2, 2, 5000.00, '1111112', NULL, 'Retrait guichet', 'sortie'),
+('2026-07-20 13:10:00', 2, 2, 2500.00, '2222222', NULL, 'Retrait guichet', 'sortie'),
+('2026-07-20 14:45:00', 3, 1, 15000.00, NULL, '1234567', 'Dépôt initial', 'entree'),
+('2026-07-20 16:00:00', 3, 3, 7000.00, '1234567', '9876543', 'Transfert client', 'sortie'),
+('2026-07-20 16:00:00', 4, 3, 7000.00, '1234567', '9876543', 'Transfert client', 'entree'),
+('2026-07-20 17:30:00', 2, 1, 20000.00, NULL, '1111112', 'Dépôt bonus', 'entree');

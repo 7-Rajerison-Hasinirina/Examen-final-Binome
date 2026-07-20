@@ -34,6 +34,26 @@ class CreateHistoriqueOperation extends Migration
                 'type'       => 'DECIMAL',
                 'constraint' => '10,2',
             ],
+            'numero_source' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 20,
+                'null'       => true,
+            ],
+            'numero_destination' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 20,
+                'null'       => true,
+            ],
+            'reference' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+                'null'       => true,
+            ],
+            'sens' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 10,
+                'null'       => true,
+            ],
         ]);
 
         $this->forge->addKey('id', true);

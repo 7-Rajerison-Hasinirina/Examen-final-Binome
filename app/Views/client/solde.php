@@ -1,152 +1,73 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Solde') ?> | Mobile Money</title>
-    <link rel="stylesheet" href="<?= base_url('assets/bootstrap/css/bootstrap.min.css') ?>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-dark: #1a3a52;
-            --primary: #2c5aa0;
-            --accent: #00d4ff;
-            --text: #333333;
-            --text-light: #666666;
-            --border: #e0e0e0;
-            --bg-light: #f8f9fa;
-            --success: #00d084;
-        }
+<?= $this->extend('client/layout') ?>
 
-        body {
-            background: #ffffff;
-            color: var(--text);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-        }
+<?= $this->section('content') ?>
+<style>
+    .hero-title {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        margin-bottom: 1.25rem;
+    }
 
-        .navbar {
-            background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 100%);
-            border-bottom: 3px solid var(--accent);
-        }
+    .hero-title h2 {
+        margin: 0;
+        color: var(--primary-dark);
+    }
 
-        .navbar-brand {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--accent) !important;
-        }
+    .balance-card {
+        display: grid;
+        gap: 0.55rem;
+        padding: 1.25rem;
+        border-radius: 18px;
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.10), rgba(36, 74, 134, 0.08));
+        border: 1px solid rgba(36, 74, 134, 0.12);
+        max-width: 620px;
+    }
 
-        .page-header {
-            padding: 2rem;
-            background: #f0f7ff;
-            border-bottom: 2px solid var(--primary);
-            margin-bottom: 2rem;
-        }
+    .balance-card .operateur {
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.78rem;
+    }
 
-        .page-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+    .balance-card .numero {
+        font-size: 1.45rem;
+        font-weight: 800;
+        color: var(--primary-dark);
+    }
 
-        .page-subtitle {
-            color: var(--text-light);
-            font-size: 0.95rem;
-            margin-top: 0.5rem;
-        }
+    .balance-card .solde {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--success);
+    }
 
-        .content-card {
-            background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
+    .meta {
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+</style>
 
-        .solde-display {
-            text-align: center;
-            padding: 2rem;
-        }
+<div class="hero-title">
+    <i class="fas fa-wallet" style="font-size: 1.7rem; color: var(--primary);"></i>
+    <h2>Solde du numéro actif</h2>
+</div>
 
-        .solde-label {
-            color: var(--text-light);
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .solde-value {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--success);
-            margin-bottom: 1rem;
-        }
-
-        .btn-back {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border: none;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
-            text-decoration: none;
-            color: white;
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="<?= base_url('/') ?>">
-                <i class="fas fa-coins"></i> Mobile Money
-            </a>
-        </div>
-    </nav>
-
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="page-title">
-            <i class="fas fa-wallet"></i> <?= esc($title) ?>
-        </div>
-        <div class="page-subtitle">Consultez votre solde actuel</div>
+<?php if (!empty($numeroActif)): ?>
+    <div class="balance-card">
+        <div class="operateur"><?= esc($numeroActif['operateur'] ?? 'Numéro') ?></div>
+        <div class="numero"><?= esc($numeroActif['prefixe']) ?> <?= esc($numeroActif['numero']) ?></div>
+        <div class="solde"><?= number_format((float) ($numeroActif['solde'] ?? 0), 2, ',', ' ') ?> Ar</div>
+        <div class="meta">Le solde est calculé uniquement pour ce numéro.</div>
     </div>
+<?php else: ?>
+    <div class="text-muted">Aucun numéro n’est rattaché à ce compte.</div>
+<?php endif; ?>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <div class="content-card">
-                    <div class="solde-display">
-                        <div class="solde-label">Solde Actuel</div>
-                        <div class="solde-value">0.00 Ar</div>
-                        <p class="text-muted">Fonctionnalité en cours de développement</p>
-                    </div>
-
-                    <div style="text-align: center; margin-top: 2rem;">
-                        <a href="<?= base_url('client-office') ?>" class="btn-back">
-                            <i class="fas fa-arrow-left"></i> Retour au Tableau de Bord
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="<?= base_url('assets/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
-</body>
-</html>
+<div style="margin-top: 1.25rem;">
+    <a href="<?= base_url('client-office') ?>" class="pill pill-neutral">
+        <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+    </a>
+</div>
+<?= $this->endSection() ?>

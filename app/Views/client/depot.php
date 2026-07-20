@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 <style>
     .form-shell {
-        max-width: 820px;
+        max-width: 760px;
         display: grid;
         gap: 1rem;
     }
@@ -11,9 +11,9 @@
     .notice {
         padding: 1rem 1.1rem;
         border-radius: 16px;
-        background: rgba(0, 212, 255, 0.08);
-        border: 1px solid rgba(36, 74, 134, 0.14);
-        color: var(--primary-dark);
+        background: rgba(0, 168, 107, 0.09);
+        border: 1px solid rgba(0, 168, 107, 0.18);
+        color: #0f7a50;
         font-weight: 600;
     }
 
@@ -63,31 +63,26 @@
         border-radius: 14px;
         color: white;
         font-weight: 800;
-        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        background: linear-gradient(135deg, var(--success), #14c18a);
     }
 </style>
 
 <div class="form-shell">
     <div>
-        <h2 style="margin: 0 0 0.35rem; color: var(--primary-dark);">Faire un transfert</h2>
-        <p style="margin: 0; color: var(--text-muted);">Le numéro actif est automatiquement utilisé comme source.</p>
+        <h2 style="margin: 0 0 0.35rem; color: var(--primary-dark);">Faire un dépôt</h2>
+        <p style="margin: 0; color: var(--text-muted);">Le dépôt créditera uniquement le numéro actif.</p>
     </div>
 
     <?php if (!empty($numeroActif)): ?>
         <div class="mini-card">
-            <div class="label">Numéro source actif</div>
+            <div class="label">Numéro actif</div>
             <div class="value"><?= esc($numeroActif['prefixe']) ?> <?= esc($numeroActif['numero']) ?></div>
             <div style="margin-top: 0.35rem; color: var(--text-muted);">Solde: <?= number_format((float) ($numeroActif['solde'] ?? 0), 2, ',', ' ') ?> Ar</div>
         </div>
 
-        <form action="<?= base_url('client-office/transfert/traiter') ?>" method="post" class="mini-card">
+        <form action="<?= base_url('client-office/depot/traiter') ?>" method="post" class="mini-card">
             <?= csrf_field() ?>
-            <input type="hidden" name="numero_source" value="<?= esc($numeroActif['numero']) ?>">
-
-            <div class="field" style="margin-bottom: 1rem;">
-                <label for="numero_destination">Numéro du destinataire</label>
-                <input type="text" name="numero_destination" id="numero_destination" placeholder="Ex: 0331234567" required>
-            </div>
+            <input type="hidden" name="numero" value="<?= esc($numeroActif['numero']) ?>">
 
             <div class="field" style="margin-bottom: 1rem;">
                 <label for="montant">Montant (Ar)</label>
@@ -95,17 +90,17 @@
             </div>
 
             <div class="field">
-                <label for="reference">Référence du transfert</label>
-                <input type="text" name="reference" id="reference" placeholder="Raison du transfert (optionnel)">
+                <label for="reference">Référence du dépôt</label>
+                <input type="text" name="reference" id="reference" placeholder="Motif du dépôt (optionnel)">
             </div>
 
             <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Effectuer le transfert</button>
+                <button type="submit" class="submit-btn"><i class="fas fa-circle-plus"></i> Effectuer le dépôt</button>
                 <a href="<?= base_url('client-office') ?>" class="pill pill-neutral"><i class="fas fa-arrow-left"></i> Annuler</a>
             </div>
         </form>
     <?php else: ?>
-        <div class="notice">Aucun numéro n’est disponible pour effectuer un transfert.</div>
+        <div class="notice">Aucun numéro n’est disponible pour effectuer un dépôt.</div>
     <?php endif; ?>
 </div>
 <?= $this->endSection() ?>

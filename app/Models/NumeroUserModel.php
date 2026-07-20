@@ -51,6 +51,18 @@ class NumeroUserModel extends Model
             ->first();
     }
 
+    public function findByNumero(string $numero): ?array
+    {
+        return $this->where('numero', $numero)->first();
+    }
+
+    public function findByNumeroAndUser(string $numero, int $idUser): ?array
+    {
+        return $this->where('numero', $numero)
+            ->where('id_user', $idUser)
+            ->first();
+    }
+
     /**
      * Récupérer tous les numéros d'un utilisateur
      */
