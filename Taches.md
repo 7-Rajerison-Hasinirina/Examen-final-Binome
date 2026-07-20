@@ -62,12 +62,15 @@
 FINI
 ====
 
-## Taches 2: ETU004246
+## Taches 2: ETU003962
     - Creation de la base de donees: operteur.db
     - Migrations
     - Seeder
+====
 
-## Taches 3: ETU003962
+====
+
+## Taches 3: ETU004246
 login -> arrive dans la page cote client 
 
 - page login.php 
@@ -85,7 +88,27 @@ login -> arrive dans la page cote client
     - OperateurModel.php
 - Controller:
     - OperateurController.php
+        index() -> listePrefixe() -> login.php
 
 - Views:
     - login.php
     - ClientOffice.php
+====
+
+====
+
+## Taches 4: ETU004246
+- Validation apres login: 
+    - Verification via login.php:
+        1-Si id_prefixe et numero existe deja dans numero_user:
+            -> redirection vers ClientOffice.php
+        2-Sinon, 
+            -> inserer dans users
+                - nom ( le nom via formulaire)
+                - id_role : 2
+            -> inserer dans numero_user
+                - id_prefixe ( via formulaire )
+                - numero ( via formulaire )
+                - id_user ( via users )
+                - date_creation ( automatique )
+        
