@@ -33,10 +33,12 @@ CREATE TABLE numero_user (
 
 CREATE TABLE bareme_frais (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_type_operation INTEGER NOT NULL,
     intervalle1 DECIMAL(10,2) NOT NULL,
     intervalle2 DECIMAL(10,2) NOT NULL,
     frais DECIMAL(10,2) NOT NULL,
     id_operateur INTEGER NOT NULL,
+    FOREIGN KEY (id_type_operation) REFERENCES type_operation(id),
     FOREIGN KEY (id_operateur) REFERENCES operateur(id)
 );
 
