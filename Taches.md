@@ -72,7 +72,7 @@ FINI
 ====
 
 ## Taches 3: ETU004246
-login -> arrive dans la page cote client 
+login -> Affichage page login.php
 
 - page login.php 
     - Nom ( champs )
@@ -95,7 +95,7 @@ login -> arrive dans la page cote client
     - login.php
     - ClientOffice.php
 ====
-
+FINI
 ====
 
 ## Taches 4: ETU004246
