@@ -68,7 +68,7 @@ FINI
     - Migrations
     - Seeder
 ====
-
+FINI
 ====
 
 ## Taches 3: ETU004246
@@ -102,7 +102,10 @@ login -> arrive dans la page cote client
 - Validation apres login: 
     - Verification via login.php:
         1-Si id_prefixe et numero existe deja dans numero_user:
-            -> redirection vers ClientOffice.php
+            Si oui, si l'id_user correspond a un client ( id_role = 2 )
+                -> redirection vers ClientOffice.php
+            Si oui, si l'id_user correspond a un operateur ( id_role = 3 )
+                -> redirection vers OperateurOffice.php
         2-Sinon, 
             -> inserer dans users
                 - nom ( le nom via formulaire)
@@ -112,4 +115,15 @@ login -> arrive dans la page cote client
                 - numero ( via formulaire )
                 - id_user ( via users )
                 - date_creation ( automatique )
+Controller:
+    - OperateurController.php:
+        - index() -> login.php
+        - authentifier() 
+            -> ClientOffice.php ou OperateurOffice.php
+
+Views:
+    - ClientOffice.php
+    - OperateurOffice.php
         
+
+## Taches 5: Creation de la page ClientOffice.php
