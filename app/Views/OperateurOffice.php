@@ -10,284 +10,460 @@ $gainStats = $gainStats ?? [];
 $accountStats = $accountStats ?? [];
 $comptesOperateur = $comptesOperateur ?? [];
 $comptesClients = $comptesClients ?? [];
+$commissionRates = $commissionRates ?? [];
+ $clientsOperateur = $clientsOperateur ?? [];
+ $clientsOperateurGrouped = $clientsOperateurGrouped ?? [];
 ?>
 
-<section class="hero-panel">
-    <div class="hero-copy">
-        <div class="hero-kicker">Tableau de bord opérateur</div>
-        <h2>Bonjour <?= esc($nom ?? '') ?></h2>
-        <p>Ce tableau rassemble la configuration des préfixes, la création des types d'opérations, la situation de gain et la situation des comptes.</p>
-        <div class="hero-badges">
-            <span class="tag tag-neutral">Compte opérateur</span>
-            <span class="tag tag-success">Base synchronisée</span>
-            <span class="tag tag-warning">Accès direct</span>
-        </div>
-    </div>
+<div class="tab-content" id="operateur-tabs-content">
 
-    <div class="hero-summary">
-        <div class="summary-label">Session active</div>
-        <div class="summary-name"><?= esc($nom ?? 'Opérateur') ?></div>
-        <div class="summary-line">Numéro: <?= esc($numero ?? '-') ?></div>
-        <div class="summary-line">Identifiant: <?= esc((string) ($user_id ?? '')) ?></div>
-    </div>
-</section>
+    <!-- ============ TABLEAU DE BORD (affiché par défaut) ============ -->
+    <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-btn-dashboard">
 
-<section class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-label">Préfixes opérateur</div>
-        <div class="stat-value"><?= esc((string) ($stats['operateurs'] ?? 0)) ?></div>
-        <div class="stat-note">Préfixes chargés depuis la table opérateur.</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-label">Comptes opérateur</div>
-        <div class="stat-value"><?= esc((string) ($stats['comptes_operateur'] ?? 0)) ?></div>
-        <div class="stat-note">Utilisateurs avec le rôle opérateur.</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-label">Numéros enregistrés</div>
-        <div class="stat-value"><?= esc((string) ($stats['numeros'] ?? 0)) ?></div>
-        <div class="stat-note">Ensemble des numéros présents en base.</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-label">Opérations récentes</div>
-        <div class="stat-value"><?= esc((string) ($stats['operations'] ?? 0)) ?></div>
-        <div class="stat-note">Activité récente visible dans le tableau.</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-label">Dépôts</div>
-        <div class="stat-value"><?= esc((string) ($stats['depots'] ?? 0)) ?></div>
-        <div class="stat-note">Opérations créditées sur les comptes.</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-label">Retraits / Transferts</div>
-        <div class="stat-value"><?= esc((string) ($stats['retraits'] ?? 0)) ?> / <?= esc((string) ($stats['transferts'] ?? 0)) ?></div>
-        <div class="stat-note">Flux sortants et mouvements internes.</div>
-    </div>
-</section>
-
-<section id="prefixes" class="dashboard-grid">
-    <article class="panel">
-        <div class="panel-head">
-            <div>
-                <h3>Configuration des préfixes</h3>
-                <span>Ajouter un préfixe et voir les opérateurs déjà enregistrés.</span>
+        <div class="card text-bg-primary mb-4">
+            <div class="card-body p-4">
+                <span class="badge text-bg-light text-primary mb-2">Tableau de bord opérateur</span>
+                <h2 class="card-title">Bonjour <?= esc($nom ?? '') ?></h2>
+                <p class="card-text mb-0">
+                    Ce tableau rassemble la configuration des préfixes, la création des types d'opérations,
+                    la situation de gain et la situation des comptes.
+                </p>
             </div>
         </div>
-        <div class="panel-body">
-            <form method="post" action="<?= base_url('operateur-office') ?>" class="mini-grid" style="margin-bottom: 1rem;">
-                <?= csrf_field() ?>
-                <input type="hidden" name="action" value="prefixe">
-                <div class="mini-card">
-                    <label for="prefixe" style="display:block; margin-bottom:0.4rem; font-weight:700; color: var(--primary-dark);">Préfixe</label>
-                    <div class="mini-head"><span></span><span class="tag tag-neutral">3 chiffres</span></div>
-                    <input id="prefixe" type="text" name="prefixe" maxlength="3" minlength="3" required class="form-control" placeholder="038">
-                </div>
-                <div class="mini-card">
-                    <label for="operateur" style="display:block; margin-bottom:0.4rem; font-weight:700; color: var(--primary-dark);">Opérateur</label>
-                    <div class="mini-head"><span></span><span class="tag tag-success">Nom</span></div>
-                    <input id="operateur" type="text" name="operateur" maxlength="50" required class="form-control" placeholder="Orange Money">
-                </div>
-                <div class="mini-card" style="display:flex; align-items:end;">
-                    <button type="submit" class="pill-btn pill-danger" style="width:100%;">Enregistrer le préfixe</button>
-                </div>
-            </form>
 
-            <?php if (empty($operateurs)): ?>
-                <div class="empty-state">Aucun opérateur trouvé en base.</div>
-            <?php else: ?>
-                <div class="mini-grid">
-                    <?php foreach ($operateurs as $operateur): ?>
-                        <div class="mini-card">
-                            <div class="mini-head">
-                                <strong><?= esc($operateur['operateur']) ?></strong>
-                                <span class="tag tag-success"><?= esc($operateur['prefixe']) ?></span>
-                            </div>
-                            <div class="mini-meta">Préfixe mobile enregistré</div>
-                        </div>
-                    <?php endforeach; ?>
+        <div class="row row-cols-1 row-cols-md-3 row-cols-xl-6 g-3 mb-4">
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted text-uppercase small">Préfixes opérateur</div>
+                        <div class="fs-3 fw-bold"><?= esc((string) ($stats['operateurs'] ?? 0)) ?></div>
+                        <div class="small text-muted">Depuis la table opérateur</div>
+                    </div>
                 </div>
-            <?php endif; ?>
-        </div>
-    </article>
-
-    <article id="types" class="panel">
-        <div class="panel-head">
-            <div>
-                <h3>Création des types d'opérations</h3>
-                <span>Ajouter un type et vérifier ceux déjà présents.</span>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted text-uppercase small">Comptes opérateur</div>
+                        <div class="fs-3 fw-bold"><?= esc((string) ($stats['comptes_operateur'] ?? 0)) ?></div>
+                        <div class="small text-muted">Utilisateurs rôle opérateur</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted text-uppercase small">Numéros enregistrés</div>
+                        <div class="fs-3 fw-bold"><?= esc((string) ($stats['numeros'] ?? 0)) ?></div>
+                        <div class="small text-muted">Numéros en base</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted text-uppercase small">Opérations récentes</div>
+                        <div class="fs-3 fw-bold"><?= esc((string) ($stats['operations'] ?? 0)) ?></div>
+                        <div class="small text-muted">Activité récente</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted text-uppercase small">Dépôts</div>
+                        <div class="fs-3 fw-bold"><?= esc((string) ($stats['depots'] ?? 0)) ?></div>
+                        <div class="small text-muted">Opérations créditées</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="text-muted text-uppercase small">Retraits / Transferts</div>
+                        <div class="fs-3 fw-bold"><?= esc((string) ($stats['retraits'] ?? 0)) ?> / <?= esc((string) ($stats['transferts'] ?? 0)) ?></div>
+                        <div class="small text-muted">Flux sortants / internes</div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="panel-body">
-            <form method="post" action="<?= base_url('operateur-office') ?>" class="mini-grid" style="margin-bottom: 1rem;">
-                <?= csrf_field() ?>
-                <input type="hidden" name="action" value="type_operation">
-                <div class="mini-card">
-                    <label for="libelle" style="display:block; margin-bottom:0.4rem; font-weight:700; color: var(--primary-dark);">Libellé</label>
-                    <div class="mini-head"><span></span><span class="tag tag-neutral">Nom</span></div>
-                    <input id="libelle" type="text" name="libelle" maxlength="50" required class="form-control" placeholder="Depot">
-                </div>
-                <div class="mini-card" style="display:flex; align-items:end;">
-                    <button type="submit" class="pill-btn pill-neutral" style="width:100%;">Créer le type</button>
-                </div>
-            </form>
 
-            <div class="mini-grid">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h3 class="h6 mb-0">Dernières opérations</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Utilisateur</th>
+                            <th>Type</th>
+                            <th>Sens</th>
+                            <th class="text-end">Montant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($recentOperations)): ?>
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Aucune opération récente.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach (array_slice($recentOperations, 0, 5) as $operation): ?>
+                                <tr>
+                                    <td><?= esc(date('d/m/Y H:i', strtotime((string) $operation['date']))) ?></td>
+                                    <td><?= esc($operation['utilisateur'] ?? '-') ?></td>
+                                    <td><?= esc($operation['type'] ?? '-') ?></td>
+                                    <td>
+                                        <?php if (($operation['sens'] ?? 'entree') === 'entree'): ?>
+                                            <span class="badge text-bg-success">Entrée</span>
+                                        <?php else: ?>
+                                            <span class="badge text-bg-warning">Sortie</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="text-end"><?= number_format((float) ($operation['valeur'] ?? 0), 2, ',', ' ') ?> Ar</td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer bg-white text-end">
+                <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="pill" data-bs-target="#tab-operations">
+                    Voir toutes les opérations
+                </button>
+                <button class="btn btn-sm btn-outline-secondary ms-2" type="button" data-bs-toggle="pill" data-bs-target="#tab-clients">
+                    Clients de l'opérateur
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ CONFIGURATION DES PREFIXES ============ -->
+    <div class="tab-pane fade" id="tab-prefixes" role="tabpanel" aria-labelledby="tab-btn-prefixes">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h3 class="h6 mb-0">Ajouter un préfixe</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" action="<?= base_url('operateur-office') ?>" class="row g-3 align-items-end">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="action" value="prefixe">
+                    <div class="col-12 col-md-4">
+                        <label for="prefixe" class="form-label fw-semibold">Préfixe <span class="badge text-bg-secondary">3 chiffres</span></label>
+                        <input id="prefixe" type="text" name="prefixe" maxlength="3" minlength="3" required class="form-control" placeholder="038">
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <label for="operateur" class="form-label fw-semibold">Opérateur <span class="badge text-bg-success">Nom</span></label>
+                        <input id="operateur" type="text" name="operateur" maxlength="50" required class="form-control" placeholder="Orange Money">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <button type="submit" class="btn btn-danger w-100">Enregistrer le préfixe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h3 class="h6 mb-0">Préfixes enregistrés</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Opérateur</th>
+                            <th>Préfixe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($operateurs)): ?>
+                            <tr>
+                                <td colspan="2" class="text-center text-muted py-4">Aucun opérateur trouvé en base.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($operateurs as $operateur): ?>
+                                <tr>
+                                    <td class="fw-semibold"><?= esc($operateur['operateur']) ?></td>
+                                    <td><span class="badge text-bg-success"><?= esc($operateur['prefixe']) ?></span></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ TYPES D'OPERATIONS ============ -->
+    <div class="tab-pane fade" id="tab-types" role="tabpanel" aria-labelledby="tab-btn-types">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h3 class="h6 mb-0">Créer un type d'opération</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" action="<?= base_url('operateur-office') ?>" class="row g-3 align-items-end">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="action" value="type_operation">
+                    <div class="col-12 col-md-8">
+                        <label for="libelle" class="form-label fw-semibold">Libellé</label>
+                        <input id="libelle" type="text" name="libelle" maxlength="50" required class="form-control" placeholder="Depot">
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <button type="submit" class="btn btn-primary w-100">Créer le type</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h3 class="h6 mb-0">Types d'opérations disponibles</h3>
+            </div>
+            <ul class="list-group list-group-flush">
                 <?php if (empty($typesOperations)): ?>
-                    <div class="empty-state">Aucun type d'opération trouvé.</div>
+                    <li class="list-group-item text-center text-muted py-4">Aucun type d'opération trouvé.</li>
                 <?php else: ?>
                     <?php foreach ($typesOperations as $type): ?>
-                        <div class="mini-card">
-                            <div class="mini-head">
-                                <strong><?= esc($type['libelle']) ?></strong>
-                                <span class="tag tag-warning">Type</span>
-                            </div>
-                            <div class="mini-meta">Type d'opération disponible</div>
-                        </div>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <?= esc($type['libelle']) ?>
+                            <span class="badge text-bg-warning">Type</span>
+                        </li>
                     <?php endforeach; ?>
+                <?php endif; ?>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ============ COMMISSION OPERATEUR ============ -->
+    <div class="tab-pane fade" id="tab-commissions" role="tabpanel" aria-labelledby="tab-btn-commissions">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h3 class="h6 mb-0">Commissions de transfert</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Modifiez le pourcentage de frais appliqué sur les transferts vers chaque opérateur.</p>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Opérateur</th>
+                                <th>Préfixe</th>
+                                <th>Pourcentage (%)</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($commissionRates)): ?>
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">Aucune commission configurée.</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($commissionRates as $commission): ?>
+                                    <tr>
+                                        <td><?= esc($commission['operateur'] ?? '-') ?></td>
+                                        <td><?= esc($commission['prefixe'] ?? '-') ?></td>
+                                        <td>
+                                            <form method="post" action="<?= base_url('operateur-office') ?>" class="d-flex align-items-center gap-2 mb-0">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="action" value="commission">
+                                                <input type="hidden" name="commission_id" value="<?= esc($commission['id'] ?? '') ?>">
+                                                <input type="hidden" name="id_operateur" value="<?= esc($commission['id_operateur'] ?? $commission['id']) ?>">
+                                                <input type="number" step="0.01" min="0" name="pourcentage" value="<?= esc(number_format((float) ($commission['pourcentage'] ?? 0), 2, '.', '')) ?>" class="form-control form-control-sm" style="width: 120px;" required>
+                                        </td>
+                                        <td class="text-end">
+                                                <button type="submit" class="btn btn-sm btn-outline-primary">Enregistrer</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ SITUATION DE GAIN ============ -->
+    <div class="tab-pane fade" id="tab-gains" role="tabpanel" aria-labelledby="tab-btn-gains">
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            <div class="col">
+                <div class="card h-100 shadow-sm border-success">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold">Total entrées</span>
+                            <span class="badge text-bg-success">Gain brut</span>
+                        </div>
+                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['total_entrees'] ?? 0), 2, ',', ' ') ?> Ar</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm border-warning">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold">Total sorties</span>
+                            <span class="badge text-bg-warning">Pertes</span>
+                        </div>
+                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['total_sorties'] ?? 0), 2, ',', ' ') ?> Ar</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm border-primary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold">Gain net</span>
+                            <span class="badge text-bg-primary">Net</span>
+                        </div>
+                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['gain_net'] ?? 0), 2, ',', ' ') ?> Ar</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ SITUATION DES COMPTES ============ -->
+    <div class="tab-pane fade" id="tab-comptes" role="tabpanel" aria-labelledby="tab-btn-comptes">
+        <div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Clients</span>
+                        <span class="badge text-bg-secondary fs-6"><?= esc((string) ($accountStats['clients'] ?? 0)) ?></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Opérateurs</span>
+                        <span class="badge text-bg-success fs-6"><?= esc((string) ($accountStats['operateurs'] ?? 0)) ?></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Numéros</span>
+                        <span class="badge text-bg-warning fs-6"><?= esc((string) ($accountStats['numeros'] ?? 0)) ?></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 g-3">
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Clients de cet opérateur</span>
+                        <span class="badge text-bg-secondary">Numéros</span>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <?php if (empty($clientsOperateurGrouped)): ?>
+                            <div class="list-group-item text-center text-muted py-4">Aucun client trouvé pour cet opérateur.</div>
+                        <?php else: ?>
+                            <?php foreach ($clientsOperateurGrouped as $client): ?>
+                                <?php foreach (($client['numeros'] ?? []) as $num): ?>
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span class="fw-semibold"><?= esc($client['client_nom'] ?? '-') ?></span>
+                                        <span class="text-muted"><?= esc($num) ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ OPERATIONS RECENTES (liste complète) ============ -->
+    <div class="tab-pane fade" id="tab-operations" role="tabpanel" aria-labelledby="tab-btn-operations">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h3 class="h6 mb-0">Opérations récentes</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Utilisateur</th>
+                            <th>Type</th>
+                            <th>Source</th>
+                            <th>Destination</th>
+                            <th class="text-end">Montant</th>
+                            <th>Sens</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($recentOperations)): ?>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">Aucune opération récente.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($recentOperations as $operation): ?>
+                                <tr>
+                                    <td><?= esc(date('d/m/Y H:i', strtotime((string) $operation['date']))) ?></td>
+                                    <td><?= esc($operation['utilisateur'] ?? '-') ?></td>
+                                    <td><?= esc($operation['type'] ?? '-') ?></td>
+                                    <td><?= esc($operation['numero_source'] ?? '-') ?></td>
+                                    <td><?= esc($operation['numero_destination'] ?? '-') ?></td>
+                                    <td class="text-end"><?= number_format((float) ($operation['valeur'] ?? 0), 2, ',', ' ') ?> Ar</td>
+                                    <td>
+                                        <?php if (($operation['sens'] ?? 'entree') === 'entree'): ?>
+                                            <span class="badge text-bg-success">Entrée</span>
+                                        <?php else: ?>
+                                            <span class="badge text-bg-warning">Sortie</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ CLIENTS DE L'OPERATEUR ============ -->
+    <div class="tab-pane fade" id="tab-clients" role="tabpanel" aria-labelledby="tab-btn-clients">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h3 class="h6 mb-0">Clients appartenant au même opérateur</h3>
+            </div>
+            <div class="card-body">
+                <?php if (empty($clientsOperateurGrouped)): ?>
+                    <div class="text-center text-muted py-4">Aucun client trouvé pour cet opérateur.</div>
+                <?php else: ?>
+                    <div class="list-group">
+                        <?php foreach ($clientsOperateurGrouped as $client): ?>
+                            <?php foreach (($client['numeros'] ?? []) as $num): ?>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="fw-semibold"><?= esc($client['client_nom'] ?? '-') ?></span>
+                                    <span class="text-muted"><?= esc($num) ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
-    </article>
-</section>
+    </div>
 
-<section id="gains" class="dashboard-grid" style="margin-top: 1rem;">
-    <article class="panel">
-        <div class="panel-head">
-            <div>
-                <h3>Situation de gain</h3>
-                <span>Vue rapide des entrées, sorties et du gain net.</span>
-            </div>
-        </div>
-        <div class="panel-body">
-            <div class="mini-grid">
-                <div class="mini-card">
-                    <div class="mini-head"><strong>Total entrées</strong><span class="tag tag-success">Gain brut</span></div>
-                    <div class="stat-value"><?= number_format((float) ($gainStats['total_entrees'] ?? 0), 2, ',', ' ') ?> Ar</div>
-                </div>
-                <div class="mini-card">
-                    <div class="mini-head"><strong>Total sorties</strong><span class="tag tag-warning">Pertes</span></div>
-                    <div class="stat-value"><?= number_format((float) ($gainStats['total_sorties'] ?? 0), 2, ',', ' ') ?> Ar</div>
-                </div>
-                <div class="mini-card">
-                    <div class="mini-head"><strong>Gain net</strong><span class="tag tag-neutral">Net</span></div>
-                    <div class="stat-value"><?= number_format((float) ($gainStats['gain_net'] ?? 0), 2, ',', ' ') ?> Ar</div>
-                </div>
-            </div>
-        </div>
-    </article>
-
-    <article id="comptes" class="panel">
-        <div class="panel-head">
-            <div>
-                <h3>Situation des comptes</h3>
-                <span>Répartition des utilisateurs et des numéros en base.</span>
-            </div>
-        </div>
-        <div class="panel-body">
-            <div class="mini-grid" style="margin-bottom: 1rem;">
-                <div class="mini-card"><div class="mini-head"><strong>Clients</strong><span class="tag tag-neutral"><?= esc((string) ($accountStats['clients'] ?? 0)) ?></span></div><div class="mini-meta">Comptes clients enregistrés</div></div>
-                <div class="mini-card"><div class="mini-head"><strong>Opérateurs</strong><span class="tag tag-success"><?= esc((string) ($accountStats['operateurs'] ?? 0)) ?></span></div><div class="mini-meta">Comptes opérateur enregistrés</div></div>
-                <div class="mini-card"><div class="mini-head"><strong>Numéros</strong><span class="tag tag-warning"><?= esc((string) ($accountStats['numeros'] ?? 0)) ?></span></div><div class="mini-meta">Numéros liés aux comptes</div></div>
-            </div>
-
-            <div class="mini-grid">
-                <div class="mini-card">
-                    <div class="mini-head"><strong>Comptes opérateur</strong><span class="tag tag-neutral">Rôle 3</span></div>
-                    <?php if (empty($comptesOperateur)): ?>
-                        <div class="empty-state">Aucun compte opérateur.</div>
-                    <?php else: ?>
-                        <?php foreach ($comptesOperateur as $compte): ?>
-                            <div class="mini-meta"><?= esc($compte['nom']) ?></div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </div>
-                <div class="mini-card">
-                    <div class="mini-head"><strong>Comptes clients</strong><span class="tag tag-success">Rôle 2</span></div>
-                    <?php if (empty($comptesClients)): ?>
-                        <div class="empty-state">Aucun compte client.</div>
-                    <?php else: ?>
-                        <?php foreach ($comptesClients as $compte): ?>
-                            <div class="mini-meta"><?= esc($compte['nom']) ?></div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </article>
-</section>
-
-<section class="dashboard-grid" style="margin-top: 1rem;">
-    <article class="panel">
-        <div class="panel-head">
-            <div>
-                <h3>Opérations récentes</h3>
-                <span>Derniers mouvements détectés en base.</span>
-            </div>
-        </div>
-        <div class="table-wrap">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Utilisateur</th>
-                        <th>Type</th>
-                        <th>Source</th>
-                        <th>Destination</th>
-                        <th>Montant</th>
-                        <th>Sens</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($recentOperations)): ?>
-                        <tr>
-                            <td colspan="7"><div class="empty-state">Aucune opération récente.</div></td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($recentOperations as $operation): ?>
-                            <tr>
-                                <td><?= esc(date('d/m/Y H:i', strtotime((string) $operation['date']))) ?></td>
-                                <td><?= esc($operation['utilisateur'] ?? '-') ?></td>
-                                <td><?= esc($operation['type'] ?? '-') ?></td>
-                                <td><?= esc($operation['numero_source'] ?? '-') ?></td>
-                                <td><?= esc($operation['numero_destination'] ?? '-') ?></td>
-                                <td><?= number_format((float) ($operation['valeur'] ?? 0), 2, ',', ' ') ?> Ar</td>
-                                <td>
-                                    <?php if (($operation['sens'] ?? 'entree') === 'entree'): ?>
-                                        <span class="tag tag-success">Entrée</span>
-                                    <?php else: ?>
-                                        <span class="tag tag-warning">Sortie</span>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-    </article>
-
-    <aside class="panel">
-        <div class="panel-head">
-            <div>
-                <h3>Raccourcis sûrs</h3>
-                <span>Actions sans risque de route manquante.</span>
-            </div>
-        </div>
-        <div class="panel-body">
-            <div class="shortcut-stack">
-                <a href="<?= base_url('operateur-office') ?>" class="shortcut-link">
-                    <strong>Actualiser le tableau</strong>
-                    <span>Recharger les statistiques</span>
-                </a>
-                <a href="<?= base_url('operateur-office/logout') ?>" class="shortcut-link shortcut-danger">
-                    <strong>Déconnexion</strong>
-                    <span>Quitter la session</span>
-                </a>
-            </div>
-            <div class="shortcut-note">
-                L’espace opérateur s’appuie désormais sur les tables déjà présentes en base et évite les écrans vides ou les boutons cassés.
-            </div>
-        </div>
-    </aside>
-</section>
+</div>
 <?= $this->endSection() ?>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    var hash = location.hash;
+    if(hash){
+        // try to find a control button that targets this pane
+        var btn = document.querySelector('[data-bs-target="' + hash + '"]');
+        if(btn){
+            btn.click();
+        }
+    }
+});
+</script>
