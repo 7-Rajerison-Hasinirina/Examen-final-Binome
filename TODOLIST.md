@@ -54,6 +54,7 @@
 ### Tables:
 - operateur
     - id
+    - prefixe ( varchar )
     - operateur ( varchar )
 ex: 033 , airtel 
 
