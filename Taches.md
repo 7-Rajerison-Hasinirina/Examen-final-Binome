@@ -44,11 +44,12 @@
 
     - bareme_frais:
         - id
+        - iD_type_operation
         - intervalle1 ( numerique 10,2)
         - intervalle2 ( numerique 10,2)
         - frais ( numerique 10,2)
         - id_operateur 
-    ex: pour yas, retrait ou transfert de l'argent entre 100Ar -> 1000 Ar : frais : 50 Ar
+    ex: pour yas, transfert de l'argent entre 100Ar -> 1000 Ar : frais : 50 Ar
 
 
     - historique_operation:
