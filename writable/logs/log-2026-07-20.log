@@ -15608,7 +15608,7 @@ in SYSTEMPATH/Database/SQLite3/Connection.php on line 163.
 13 SYSTEMPATH/Boot.php(442): CodeIgniter\CLI\Console->run()
 14 SYSTEMPATH/Boot.php(166): CodeIgniter\Boot::runCommand()
 15 ROOTPATH/spark(87): CodeIgniter\Boot::bootSpark()
-ERROR - 2026-07-20 09:56:01 --> near ")": syntax error
+ERROR - 2026-07-20 10:40:19 --> near ")": syntax error
 in SYSTEMPATH/Database/SQLite3/Connection.php on line 163.
  1 SYSTEMPATH/Database/SQLite3/Connection.php(163): SQLite3->exec()
  2 SYSTEMPATH/Database/BaseConnection.php(910): CodeIgniter\Database\SQLite3\Connection->execute()
