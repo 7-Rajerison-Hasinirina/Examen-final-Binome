@@ -82,9 +82,9 @@ login -> arrive dans la page cote client
 
 - Entity: 
     - UserModel.php:
-    - 
+    - OperateurModel.php
 - Controller:
-    - 
+    - OperateurController.php
 
 - Views:
     - login.php

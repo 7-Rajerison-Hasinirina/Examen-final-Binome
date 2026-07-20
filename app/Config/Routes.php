@@ -6,8 +6,8 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-$routes->get('/', 'GestionUser::index');
-$routes->post('login/authentifier', 'GestionUser::authentifier');
+$routes->get('/', 'OperateurController::index');
+// $routes->post('login/authentifier', 'GestionUser::authentifier');
 // $routes->get('logout', 'GestionUser::deconnexion');
 // $routes->get('inscription', 'GestionUser::inscription');
 // $routes->post('inscription/user/add', 'GestionUser::ajouterUser');
@@ -15,7 +15,7 @@ $routes->post('login/authentifier', 'GestionUser::authentifier');
 // $routes->post('inscription/user/info/add', 'GestionUser::ajouterInformation');
 
 
-$routes->group('', ['operateur' => 'auth'], function($routes) {
-    $routes->post('regime/objectif/add', 'GestionRegime::sauvegarderObjectif');
-    $routes->get('regime/calculer', 'GestionRegime::calculerRegime');
-});
+// $routes->group('', ['operateur' => 'auth'], function($routes) {
+//     $routes->post('regime/objectif/add', 'GestionRegime::sauvegarderObjectif');
+//     $routes->get('regime/calculer', 'GestionRegime::calculerRegime');
+// });

@@ -32,4 +32,9 @@ class OperateurModel extends Model
             'min_length' => 'Le nom de l\'opérateur doit contenir au moins 2 caractères.'
         ]
     ];
+
+    public function getAllOperateurs()
+    {
+        return $this->findAll();
+    }
 }
