@@ -3,7 +3,7 @@
 - ETU004246 : RATOVONIAINA Faneva Mamisoa
 
 ## Taches 1: ETU003962
-- Conception relationnelle:
+- Conception relationnelle: dans base.sql 
     - operateur
         - id
         - prefixe ( varchar )
@@ -16,20 +16,13 @@
         - libelle
     ex: depot, retrait, transfert
 
-
-    - numero:
-        - id
-        - numero ( unique ) ( varchar )
-    ex: 3377745
-
-
     - role
         - id
         - libelle
     ex: admin, client, operateur
 
 
-    - user:
+    - users:
         - id
         - nom ( varchar )
         - id_role
@@ -41,7 +34,7 @@
     - numero_user:
         - id
         - id_prefixe
-        - id_numero
+        - numero
         - id_user
         - date_creation ( datetime automatique )
     ex:
@@ -65,3 +58,13 @@
         - id_operation
         - valeur
     ex:  20 juillet 2026, 11:31 , Rakoto Jean , fait un retrait, 5000 Ar, 
+====
+FINI
+====
+
+## Taches 2: ETU004246
+    - Creation de la base de donees: operteur.db
+    - Migrations
+    - Seeder
+
+## Taches 3: ETU003962
