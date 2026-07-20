@@ -50,7 +50,7 @@ class OperateurOfficeController extends BaseController
         return $errors ? implode(' ', $errors) : 'Données invalides.';
     }
 
-    private function getDashboardData(): array
+    private function getDashboardData(?int $userId = null): array
     {
         $prefixes = $this->operateurModel->orderBy('prefixe', 'ASC')->findAll();
         $typesOperations = $this->typeOperationModel->orderBy('libelle', 'ASC')->findAll();
@@ -89,6 +89,59 @@ class OperateurOfficeController extends BaseController
             ->orderBy('users.nom', 'ASC')
             ->findAll();
 
+        // Clients appartenant aux mêmes opérateurs que l'opérateur connecté
+        $clientsOperateur = [];
+        if ($userId !== null) {
+            $myNums = $this->numeroUserModel->getNumerosByUser($userId);
+            $prefixIds = array_values(array_unique(array_column($myNums, 'id_prefixe')));
+            if (!empty($prefixIds)) {
+                $operatorNames = $this->operateurModel
+                    ->select('operateur')
+                    ->whereIn('id', $prefixIds)
+                    ->distinct()
+                    ->findColumn('operateur');
+
+                if (!empty($operatorNames)) {
+                    $prefixIdsForOperator = $this->operateurModel
+                        ->select('id')
+                        ->whereIn('operateur', $operatorNames)
+                        ->findColumn('id');
+
+                    if (!empty($prefixIdsForOperator)) {
+                        $clientsOperateur = $this->numeroUserModel
+                            ->select('numero_user.numero, operateur.prefixe AS prefixe, users.nom AS client_nom, users.id AS client_id, numero_user.id_prefixe')
+                            ->join('users', 'users.id = numero_user.id_user', 'left')
+                            ->join('operateur', 'operateur.id = numero_user.id_prefixe', 'left')
+                            ->whereIn('numero_user.id_prefixe', $prefixIdsForOperator)
+                            ->where('users.id_role', 2)
+                            ->orderBy('operateur.prefixe', 'ASC')
+                            ->orderBy('numero_user.numero', 'ASC')
+                            ->findAll();
+                    }
+                }
+            }
+        }
+            // Grouper les résultats par client (regrouper les numéros par client)
+            $clientsOperateurGrouped = [];
+            if (!empty($clientsOperateur)) {
+                foreach ($clientsOperateur as $row) {
+                    $cid = $row['client_id'] ?? null;
+                    if ($cid === null) continue;
+                    if (!isset($clientsOperateurGrouped[$cid])) {
+                        $clientsOperateurGrouped[$cid] = [
+                            'client_id' => $cid,
+                            'client_nom' => $row['client_nom'] ?? '-',
+                            'numeros' => [],
+                        ];
+                    }
+                    $prefixe = trim((string) ($row['prefixe'] ?? ''));
+                    $numero = trim((string) ($row['numero'] ?? ''));
+                    $full = $prefixe !== '' ? $prefixe . $numero : $numero;
+                    $clientsOperateurGrouped[$cid]['numeros'][] = $full;
+                }
+                $clientsOperateurGrouped = array_values($clientsOperateurGrouped);
+            }
+
         return [
             'prefixes' => $prefixes,
             'typesOperations' => $typesOperations,
@@ -97,6 +150,8 @@ class OperateurOfficeController extends BaseController
             'accountStats' => $accountStats,
             'comptesOperateur' => $comptesOperateur,
             'comptesClients' => $comptesClients,
+            'clientsOperateur' => $clientsOperateur,
+            'clientsOperateurGrouped' => $clientsOperateurGrouped,
         ];
     }
 
@@ -121,7 +176,7 @@ class OperateurOfficeController extends BaseController
                         'operateur' => $operateur,
                     ]);
 
-                    $redirect = redirect()->to('/operateur-office#prefixes')->with('success', 'Préfixe ajouté avec succès.');
+                    $redirect = redirect()->to('/operateur-office#tab-prefixes')->with('success', 'Préfixe ajouté avec succès.');
                 }
             } else {
                 $redirect = redirect()->back()->withInput()->with('error', $this->getValidationError());
@@ -137,7 +192,7 @@ class OperateurOfficeController extends BaseController
                     'libelle' => $libelle,
                 ]);
 
-                $redirect = redirect()->to('/operateur-office#types')->with('success', 'Type d\'opération créé avec succès.');
+                $redirect = redirect()->to('/operateur-office#tab-types')->with('success', 'Type d\'opération créé avec succès.');
             } else {
                 $redirect = redirect()->back()->withInput()->with('error', $this->getValidationError());
             }
@@ -163,7 +218,7 @@ class OperateurOfficeController extends BaseController
         $nom = session()->get('nom');
         $numero = session()->get('numero');
 
-        $dashboardData = $this->getDashboardData();
+        $dashboardData = $this->getDashboardData($userId);
 
         $stats = [
             'operateurs' => count($dashboardData['prefixes']),
@@ -188,6 +243,8 @@ class OperateurOfficeController extends BaseController
             'accountStats' => $dashboardData['accountStats'],
             'comptesOperateur' => $dashboardData['comptesOperateur'],
             'comptesClients' => $dashboardData['comptesClients'],
+            'clientsOperateur' => $dashboardData['clientsOperateur'],
+            'clientsOperateurGrouped' => $dashboardData['clientsOperateurGrouped'],
         ];
 
         return view('OperateurOffice', $data);

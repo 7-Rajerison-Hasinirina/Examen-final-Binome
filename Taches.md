@@ -175,4 +175,34 @@ FINI
         - retourner l'historique des operations
 
 
+====
+FINI
+====
 
+
+
+======================================================================================================================
+# Version 2:
+## COTE OPERATEUR:
+### Taches 1: ETU004246
+- Configuration des prefixes valables pour les autres operateurs:
+    - Table: operateur
+        - id
+        - prefixe ( varchar )
+        - operateur ( varchar )
+    ex: 033 , airtel
+    - Controller: OperateurOfficeController.php
+        - index() -> listePrefixe() -> OperateurOffice.php
+    
+### Taches 2: ETU003962
+- Configuration % en plus de commissions pour les transferts vers les autres operateurs:
+    - Table: bareme_frais
+        - id
+        - iD_type_operation
+        - intervalle1 ( numerique 10,2)
+        - intervalle2 ( numerique 10,2)
+        - frais ( numerique 10,2)
+        - id_operateur 
+    ex: pour yas, transfert de l'argent entre 100Ar -> 1000 Ar : frais : 50 Ar
+    - Controller: OperateurOfficeController.php
+        - index() -> listeBaremeFrais() -> OperateurOffice.php
