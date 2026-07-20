@@ -68,3 +68,24 @@ FINI
     - Seeder
 
 ## Taches 3: ETU003962
+login -> arrive dans la page cote client 
+
+- page login.php 
+    - Nom ( champs )
+    - liste deorulante de prefix 
+        - findAll() dans table operateur.prefixe
+    - numero de telephone ( champs )
+    - bouton: Valider
+
+- elements necessaires:
+    - liste des prefixes via table operateur
+
+- Entity: 
+    - UserModel.php:
+    - 
+- Controller:
+    - 
+
+- Views:
+    - login.php
+    - ClientOffice.php
