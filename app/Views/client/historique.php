@@ -18,8 +18,8 @@
         }
 
         body {
-            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-light) 100%);
-            color: var(--text);
+            background: #ffffff;
+            color: #333333;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
         }
@@ -37,15 +37,15 @@
 
         .page-header {
             padding: 2rem;
-            background: linear-gradient(135deg, rgba(44, 90, 160, 0.2) 0%, rgba(0, 212, 255, 0.1) 100%);
-            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            background: #e3f2fd;
+            border-bottom: 2px solid var(--primary);
             margin-bottom: 2rem;
         }
 
         .page-title {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--accent);
+            color: var(--primary);
             margin-bottom: 0;
             display: flex;
             align-items: center;
@@ -53,17 +53,18 @@
         }
 
         .page-subtitle {
-            color: var(--text-muted);
+            color: #666666;
             font-size: 0.95rem;
             margin-top: 0.5rem;
         }
 
         .content-card {
-            background: rgba(42, 90, 160, 0.15);
-            border: 1px solid rgba(0, 212, 255, 0.3);
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 1rem;
             padding: 2rem;
             margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .table-wrapper {
@@ -75,9 +76,9 @@
         }
 
         .table thead th {
-            background: rgba(0, 212, 255, 0.1);
-            border-color: rgba(0, 212, 255, 0.3);
-            color: var(--accent);
+            background: #e3f2fd;
+            border-color: #90caf9;
+            color: var(--primary);
             font-weight: 600;
             border-top: none;
         }

@@ -22,8 +22,8 @@
         }
 
         body {
-            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-light) 100%);
-            color: var(--text);
+            background: #ffffff;
+            color: #333333;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
         }
@@ -46,7 +46,7 @@
         }
 
         .user-info {
-            color: var(--text-muted);
+            color: #ffffff;
             font-size: 0.95rem;
         }
 
@@ -56,8 +56,8 @@
         }
 
         .sidebar {
-            background: var(--bg-light);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
             padding: 2rem 1rem;
             position: sticky;
             top: 70px;
@@ -66,19 +66,19 @@
         }
 
         .sidebar-title {
-            color: var(--accent);
+            color: #2c5aa0;
             font-size: 0.9rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 1.5rem;
             padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            border-bottom: 2px solid #2c5aa0;
         }
 
         .info-card {
-            background: rgba(42, 90, 160, 0.15);
-            border: 1px solid rgba(0, 212, 255, 0.3);
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
             border-radius: 0.75rem;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
@@ -90,7 +90,7 @@
             align-items: center;
             margin-bottom: 1rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(44, 90, 160, 0.1);
         }
 
         .info-item:last-child {
@@ -100,7 +100,7 @@
         }
 
         .info-label {
-            color: var(--text-muted);
+            color: #666666;
             font-size: 0.9rem;
             font-weight: 500;
         }
@@ -113,12 +113,13 @@
 
         .main-content {
             padding: 2rem;
+            background: #ffffff;
         }
 
         .page-title {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--accent);
+            color: #2c5aa0;
             margin-bottom: 2rem;
             display: flex;
             align-items: center;
@@ -133,8 +134,8 @@
         }
 
         .action-card {
-            background: linear-gradient(135deg, rgba(42, 90, 160, 0.2) 0%, rgba(76, 123, 201, 0.1) 100%);
-            border: 1px solid rgba(0, 212, 255, 0.2);
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
             border-radius: 1rem;
             padding: 1.5rem;
             text-align: center;
@@ -147,13 +148,14 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .action-card:hover {
-            background: linear-gradient(135deg, rgba(42, 90, 160, 0.3) 0%, rgba(76, 123, 201, 0.2) 100%);
-            border-color: var(--accent);
+            background: #f0f7ff;
+            border-color: #2c5aa0;
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(44, 90, 160, 0.15);
             text-decoration: none;
             color: inherit;
         }
@@ -166,12 +168,12 @@
         .action-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--text);
+            color: #2c5aa0;
         }
 
         .action-description {
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: #666666;
         }
 
         .alert {
@@ -215,12 +217,13 @@
         }
 
         .numero-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(0, 212, 255, 0.2);
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
             padding: 0.75rem 1rem;
             border-radius: 0.5rem;
             margin-bottom: 0.5rem;
             font-size: 0.95rem;
+            color: #333333;
         }
 
         .numero-item span {

@@ -124,6 +124,9 @@ Controller:
 Views:
     - ClientOffice.php
     - OperateurOffice.php
+====
+FINI
+====
         
 
 ## Taches 5: Creation de la page ClientOffice.php
@@ -159,6 +162,17 @@ Views:
 ====
 FINI
 ====
+
+
+## Taches 6: Fonctionnalite Voir solde actuel:
+- Dans ClientOfficeController.php
+- Methodes a creer:
+    - getSoldeActuel($id_user)
+        - recuperer le solde actuel du client via l'id_user
+        - retourner le solde actuel
+    - getHistoriqueOperations($id_user)
+        - recuperer l'historique des operations du client via l'id_user
+        - retourner l'historique des operations
 
 
 

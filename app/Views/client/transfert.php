@@ -19,8 +19,8 @@
         }
 
         body {
-            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-light) 100%);
-            color: var(--text);
+            background: #ffffff;
+            color: #333333;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
         }
@@ -38,15 +38,15 @@
 
         .page-header {
             padding: 2rem;
-            background: linear-gradient(135deg, rgba(44, 90, 160, 0.2) 0%, rgba(0, 212, 255, 0.1) 100%);
-            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            background: #e3f2fd;
+            border-bottom: 2px solid var(--primary);
             margin-bottom: 2rem;
         }
 
         .page-title {
             font-size: 2rem;
             font-weight: 700;
-            color: var(--accent);
+            color: var(--primary);
             margin-bottom: 0;
             display: flex;
             align-items: center;
@@ -54,17 +54,18 @@
         }
 
         .page-subtitle {
-            color: var(--text-muted);
+            color: #666666;
             font-size: 0.95rem;
             margin-top: 0.5rem;
         }
 
         .content-card {
-            background: rgba(42, 90, 160, 0.15);
-            border: 1px solid rgba(0, 212, 255, 0.3);
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 1rem;
             padding: 2rem;
             margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .form-group {
@@ -72,34 +73,36 @@
         }
 
         .form-label {
-            color: var(--accent);
+            color: var(--primary);
             font-weight: 600;
             margin-bottom: 0.5rem;
             font-size: 0.95rem;
         }
 
         .form-control {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            color: var(--text);
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            color: #333333;
             padding: 0.75rem 1rem;
             border-radius: 0.5rem;
             transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .form-control:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--accent);
-            color: var(--text);
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+            background: #ffffff;
+            border-color: var(--primary);
+            color: #333333;
+            box-shadow: 0 0 10px rgba(44, 90, 160, 0.2);
+            outline: none;
         }
 
         .form-control::placeholder {
-            color: var(--text-muted);
+            color: #999999;
         }
 
         .btn-submit {
-            background: linear-gradient(90deg, var(--info) 0%, #00b8d4 100%);
+            background: linear-gradient(135deg, var(--info) 0%, #00b8d4 100%);
             border: none;
             color: white;
             padding: 0.75rem 2rem;
@@ -115,13 +118,13 @@
         }
 
         .btn-submit:hover {
-            background: linear-gradient(90deg, #00b8d4 0%, #0099b8 100%);
+            background: linear-gradient(135deg, #00b8d4 0%, #0099b8 100%);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
         }
 
         .btn-back {
-            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             border: none;
             color: white;
             padding: 0.75rem 1.5rem;

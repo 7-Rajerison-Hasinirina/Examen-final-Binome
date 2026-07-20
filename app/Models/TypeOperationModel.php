@@ -27,17 +27,11 @@ class TypeOperationModel extends Model
         ]
     ];
 
-    /**
-     * Récupérer toutes les opérations
-     */
     public function getAllOperations()
     {
         return $this->findAll();
     }
 
-    /**
-     * Récupérer une opération par son ID
-     */
     public function getOperationById($id)
     {
         return $this->find($id);
