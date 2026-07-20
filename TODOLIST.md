@@ -50,5 +50,20 @@
 
 
 
-            
-     
+# Fonctionnalites attendues:
+1- Creation d'une formulaire:
+    - Nom ( champs )
+    - liste deorulante de prefix 
+        - findAll() dans table operateur.prefixe
+    - numero de telephone ( champs )
+    - bouton: Valider
+
+----> Valider: 
+    - Verifier si le numero ( prefixe et numero) existe deja dans la table numero_user
+        - si oui: message d'erreur: "Numero deja existant"
+        - si non: 
+            - inserer le numero dans la table numero_user
+            - inserer l'id du prefixe, l'id du numero, l'id de l'utilisateur et la date de creation automatique
+
+
+creation de tag:
