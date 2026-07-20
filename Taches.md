@@ -196,13 +196,13 @@ FINI
     
 ### Taches 2: ETU003962
 - Configuration % en plus de commissions pour les transferts vers les autres operateurs:
-    - Table: bareme_frais
+    - Table commission_operateur:
         - id
-        - iD_type_operation
-        - intervalle1 ( numerique 10,2)
-        - intervalle2 ( numerique 10,2)
-        - frais ( numerique 10,2)
-        - id_operateur 
-    ex: pour yas, transfert de l'argent entre 100Ar -> 1000 Ar : frais : 50 Ar
-    - Controller: OperateurOfficeController.php
-        - index() -> listeBaremeFrais() -> OperateurOffice.php
+        - id_operateur ( operateur vers lequel le transfert est fait )
+        - pourcentage ( numerique 10,2)
+
+    - donnee:
+        - Airtel: 5%
+        - Orange: 10%
+        - Telma: 15%
+

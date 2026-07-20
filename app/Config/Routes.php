@@ -23,7 +23,7 @@ $routes->get('client-office/historique', 'ClientOfficeController::historique');
 $routes->get('client-office/logout', 'ClientOfficeController::logout');
 
 // Routes pour Opérateur Office
-$routes->get('operateur-office', 'OperateurOfficeController::index');
+$routes->match(['get', 'post'], 'operateur-office', 'OperateurOfficeController::index');
 $routes->get('operateur-office/logout', 'OperateurOfficeController::logout');
 
 // $routes->post('login/authentifier', 'GestionUser::authentifier');

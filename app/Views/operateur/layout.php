@@ -45,6 +45,9 @@
                         <button class="nav-link text-white text-start" id="tab-btn-comptes" data-bs-toggle="pill" data-bs-target="#tab-comptes" type="button" role="tab" aria-controls="tab-comptes" aria-selected="false">
                             Situation des comptes
                         </button>
+                        <button class="nav-link text-white text-start" id="tab-btn-clients" data-bs-toggle="pill" data-bs-target="#tab-clients" type="button" role="tab" aria-controls="tab-clients" aria-selected="false">
+                            Clients de l'opérateur
+                        </button>
                         <button class="nav-link text-white text-start" id="tab-btn-operations" data-bs-toggle="pill" data-bs-target="#tab-operations" type="button" role="tab" aria-controls="tab-operations" aria-selected="false">
                             Opérations récentes
                         </button>
@@ -107,6 +110,7 @@
                 'types': 'tab-btn-types',
                 'gains': 'tab-btn-gains',
                 'comptes': 'tab-btn-comptes',
+                'clients': 'tab-btn-clients',
                 'operations': 'tab-btn-operations'
             };
 

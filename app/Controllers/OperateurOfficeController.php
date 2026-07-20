@@ -169,17 +169,17 @@ class OperateurOfficeController extends BaseController
                 $operateur = trim((string) $this->request->getPost('operateur'));
 
                 if (strlen($prefixe) !== 3) {
-                    $redirect = redirect()->back()->withInput()->with('error', 'Le préfixe doit contenir exactement 3 chiffres.');
+                    $redirect = redirect()->to('/operateur-office#prefixes')->withInput()->with('error', 'Le préfixe doit contenir exactement 3 chiffres.');
                 } else {
                     $this->operateurModel->insert([
                         'prefixe' => $prefixe,
                         'operateur' => $operateur,
                     ]);
 
-                    $redirect = redirect()->to('/operateur-office#tab-prefixes')->with('success', 'Préfixe ajouté avec succès.');
+                    $redirect = redirect()->to('/operateur-office#prefixes')->with('success', 'Préfixe ajouté avec succès.');
                 }
             } else {
-                $redirect = redirect()->back()->withInput()->with('error', $this->getValidationError());
+                $redirect = redirect()->to('/operateur-office#prefixes')->withInput()->with('error', $this->getValidationError());
             }
         }
 
@@ -192,9 +192,9 @@ class OperateurOfficeController extends BaseController
                     'libelle' => $libelle,
                 ]);
 
-                $redirect = redirect()->to('/operateur-office#tab-types')->with('success', 'Type d\'opération créé avec succès.');
+                $redirect = redirect()->to('/operateur-office#types')->with('success', 'Type d\'opération créé avec succès.');
             } else {
-                $redirect = redirect()->back()->withInput()->with('error', $this->getValidationError());
+                $redirect = redirect()->to('/operateur-office#types')->withInput()->with('error', $this->getValidationError());
             }
         }
 
