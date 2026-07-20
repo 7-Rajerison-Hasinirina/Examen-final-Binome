@@ -18,7 +18,18 @@ class OperateurModel extends Model
 
     public function getAllOperateurs()
     {
-        return $this->orderBy('prefixe', 'ASC')->findAll();
+        $prefixes = $this->orderBy('prefixe', 'ASC')->findAll();
+
+        if (!empty($prefixes)) {
+            return $prefixes;
+        }
+
+        return [
+            ['id' => 1, 'prefixe' => '032', 'operateur' => 'Orange Money'],
+            ['id' => 2, 'prefixe' => '033', 'operateur' => 'Airtel Money'],
+            ['id' => 3, 'prefixe' => '034', 'operateur' => 'MVola'],
+            ['id' => 4, 'prefixe' => '038', 'operateur' => 'MVola'],
+        ];
     }
 
     public function getPrefixes()
