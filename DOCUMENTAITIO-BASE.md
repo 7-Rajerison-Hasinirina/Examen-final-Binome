@@ -258,3 +258,72 @@ public function save()
 | Email.php | ⭐⭐⭐☆☆ |
 
 > Pour le développement de formulaires avec CodeIgniter 4, les trois fichiers les plus importants sont **Routes.php**, **Validation.php** et **Database.php**. Ils permettent de définir les URL, de valider les données saisies et d'interagir avec la base de données.
+
+
+
+
+
+
+
+
+## base: 'operateur.db'
+### Tables:
+- operateur
+    - id
+    - operateur ( varchar )
+ex: 033 , airtel 
+
+
+- type_operation
+    - id
+    - libelle
+ex: depot, retrait, transfert
+
+
+- numero:
+    - id
+    - numero ( unique )
+ex: 3377745
+
+
+- role
+    - id
+    - libelle
+ex: admin, client, operateur
+
+
+- user:
+    - id
+    - nom
+    - id_role
+ex: Rakoto Jean , client
+    Jean Paul, admin 
+    Yas, operateur 
+
+
+- numero_user:
+    - id
+    - id_prefixe
+    - id_numero
+    - id_user
+ex:
+Rakoto : 037 11 111 11
+Rakoto: 033 11 111 12 
+      
+
+- bareme_frais:
+    - id
+    - intervalle1
+    - intervalle2
+    - frais
+    - id_operateur 
+ex: pour yas, retrait ou transfert de l'argent entre 100Ar -> 1000 Ar : frais : 50 Ar
+
+
+- historique_operation:
+    - id
+    - date
+    - id_user
+    - id_operation
+    - valeur
+ex:  20 juillet 2026, 11:31 , Rakoto Jean , fait un retrait, 5000 Ar, 
