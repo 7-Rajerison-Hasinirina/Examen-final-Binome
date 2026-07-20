@@ -42,6 +42,9 @@
                         <button class="nav-link text-white text-start" id="tab-btn-gains" data-bs-toggle="pill" data-bs-target="#tab-gains" type="button" role="tab" aria-controls="tab-gains" aria-selected="false">
                             Situation de gain
                         </button>
+                        <button class="nav-link text-white text-start" id="tab-btn-commissions" data-bs-toggle="pill" data-bs-target="#tab-commissions" type="button" role="tab" aria-controls="tab-commissions" aria-selected="false">
+                            Commission opérateur
+                        </button>
                         <button class="nav-link text-white text-start" id="tab-btn-comptes" data-bs-toggle="pill" data-bs-target="#tab-comptes" type="button" role="tab" aria-controls="tab-comptes" aria-selected="false">
                             Situation des comptes
                         </button>
@@ -109,6 +112,7 @@
                 'prefixes': 'tab-btn-prefixes',
                 'types': 'tab-btn-types',
                 'gains': 'tab-btn-gains',
+                'commissions': 'tab-btn-commissions',
                 'comptes': 'tab-btn-comptes',
                 'clients': 'tab-btn-clients',
                 'operations': 'tab-btn-operations'

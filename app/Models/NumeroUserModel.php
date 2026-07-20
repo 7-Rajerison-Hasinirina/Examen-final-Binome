@@ -63,6 +63,23 @@ class NumeroUserModel extends Model
             ->first();
     }
 
+    public function findByNumeroWithOperateur(string $numero): ?array
+    {
+        return $this->select('numero_user.*, operateur.prefixe, operateur.operateur')
+            ->join('operateur', 'numero_user.id_prefixe = operateur.id', 'left')
+            ->where('numero_user.numero', $numero)
+            ->first();
+    }
+
+    public function findByNumeroAndUserWithOperateur(string $numero, int $idUser): ?array
+    {
+        return $this->select('numero_user.*, operateur.prefixe, operateur.operateur')
+            ->join('operateur', 'numero_user.id_prefixe = operateur.id', 'left')
+            ->where('numero_user.numero', $numero)
+            ->where('numero_user.id_user', $idUser)
+            ->first();
+    }
+
     /**
      * Récupérer tous les numéros d'un utilisateur
      */

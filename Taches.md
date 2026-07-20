@@ -193,6 +193,10 @@ FINI
     ex: 033 , airtel
     - Controller: OperateurOfficeController.php
         - index() -> listePrefixe() -> OperateurOffice.php
+
+====
+FINI
+====
     
 ### Taches 2: ETU003962
 - Configuration % en plus de commissions pour les transferts vers les autres operateurs:
@@ -205,4 +209,24 @@ FINI
         - Airtel: 5%
         - Orange: 10%
         - Telma: 15%
+
+
+### Taches 3: ETU004246
+COTE CLIENT:
+ Option inclure frais de retrait lors de l'envoi:
+    exemple:
+        un operateur yas fait un transfert de 5000 Ar vers yas, :
+                - frais de transfert : 250 Ar , selon la table bareme_frais
+                - frais de retrait : 0 Ar pour le frais de retrait ( pour le meme operateur )
+            l'argent a transferer = argenet a transferer + frais de transfert + frais de retrait
+        un operateur yas fait un transfert de 5000 Ar vers airtel, :
+                - frais de transfert : 250 Ar , selon la table bareme_frais ( par exemple )
+                - frais de retrait : on utilsie la talbe commission_operateur pour calculer le % de frais de retrait selon l'operateur du destinataire , dans notre exmeple , c'est airtel, donc 10% de 5000 Ar = 500 Ar
+            argent a transferer = argenet a transferer + frais de transfert + frais de retrait
+
+
+ Envoi multiple vers plusieurs numeros ( divise le montannt  pour chaque numero ) pour le meme operateur UNIQUEMENT 
+    - exemple :
+    un client yas : 0347777777 a un solde actuel 2000 Ar
+    et il souhaite effectuer un transfert de 1500 Ar vers 0348888888 et 500Ar vers 0349999999
 

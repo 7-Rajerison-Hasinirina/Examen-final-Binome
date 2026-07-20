@@ -16,6 +16,7 @@ class MainSeeder extends Seeder
         $this->call('UsersSeeder');
         $this->call('NumeroUserSeeder');
         $this->call('BaremeFraisSeeder');
+        $this->call('CommissionOperateurSeeder');
         $this->call('HistoriqueSeeder');
 
         $this->db->transComplete();

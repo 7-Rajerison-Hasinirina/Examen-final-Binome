@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\BaremeFraisModel;
+use App\Models\CommissionOperateurModel;
 use App\Models\HistoriqueOperationModel;
 use App\Models\NumeroUserModel;
 use App\Models\TypeOperationModel;
@@ -12,12 +14,16 @@ class ClientOfficeController extends BaseController
     protected $numeroUserModel;
     protected $typeOperationModel;
     protected $historiqueOperationModel;
+    protected $baremeFraisModel;
+    protected $commissionOperateurModel;
 
     public function __construct()
     {
         $this->numeroUserModel = new NumeroUserModel();
         $this->typeOperationModel = new TypeOperationModel();
         $this->historiqueOperationModel = new HistoriqueOperationModel();
+        $this->baremeFraisModel = new BaremeFraisModel();
+        $this->commissionOperateurModel = new CommissionOperateurModel();
     }
 
     private function guardClientSession(): ?RedirectResponse
@@ -62,6 +68,46 @@ class ClientOfficeController extends BaseController
         return $this->historiqueOperationModel->getBalancesByNumbers(
             $this->numeroUserModel->getNumerosByUser($userId)
         );
+    }
+
+    private function getNumeroAvecOperateur(string $numero): ?array
+    {
+        return $this->numeroUserModel->findByNumeroWithOperateur($numero);
+    }
+
+    private function getNumeroAvecOperateurUtilisateur(string $numero, int $userId): ?array
+    {
+        return $this->numeroUserModel->findByNumeroAndUserWithOperateur($numero, $userId);
+    }
+
+    private function getCommissionWithdrawalFee(array $destination, float $montant): float
+    {
+        $commission = $this->commissionOperateurModel->getByOperateur((int) ($destination['id_prefixe'] ?? 0));
+        if (!$commission) {
+            return 0.0;
+        }
+
+        return ((float) $commission['pourcentage'] * $montant) / 100.0;
+    }
+
+    private function calculateTransfertAmounts(array $source, array $destination, float $montant, bool $includeWithdrawalFee): array
+    {
+        $transferFee = $this->baremeFraisModel->getFraisForOperation(
+            (int) ($source['id_prefixe'] ?? 0),
+            $this->getOperationId('Transfert'),
+            $montant
+        );
+
+        $withdrawalFee = 0.0;
+        if ($includeWithdrawalFee && strcasecmp(trim((string) ($source['operateur'] ?? '')), trim((string) ($destination['operateur'] ?? ''))) !== 0) {
+            $withdrawalFee = $this->getCommissionWithdrawalFee($destination, $montant);
+        }
+
+        return [
+            'transferFee' => $transferFee,
+            'withdrawalFee' => $withdrawalFee,
+            'totalDebit' => $montant + $transferFee + $withdrawalFee,
+        ];
     }
 
     private function getNumeroActif(array $numeros): ?array
@@ -343,8 +389,8 @@ class ClientOfficeController extends BaseController
 
         if (!$this->validate([
             'numero_source' => 'required',
-            'numero_destination' => 'required',
-            'montant' => 'required|numeric|greater_than[0]',
+            'destinations.*' => 'required',
+            'montants.*' => 'required|numeric|greater_than[0]',
             'reference' => 'permit_empty|max_length[255]',
         ])) {
             return redirect()->back()->withInput()->with('error', $this->getValidationError());
@@ -352,51 +398,116 @@ class ClientOfficeController extends BaseController
 
         $userId = $this->getCurrentUserId();
         $numeroSource = $this->normalizeNumero($this->request->getPost('numero_source'));
-        $numeroDestination = $this->normalizeNumero($this->request->getPost('numero_destination'));
-        $montant = (float) $this->request->getPost('montant');
+        $destinations = $this->request->getPost('destinations');
+        $montants = $this->request->getPost('montants');
         $reference = trim((string) $this->request->getPost('reference'));
+        $includeWithdrawalFee = $this->request->getPost('include_withdrawal_fee') === '1';
 
-        $source = $this->numeroUserModel->findByNumeroAndUser($numeroSource, $userId);
+        if (empty($destinations) || !is_array($destinations) || empty($montants) || !is_array($montants)) {
+            return redirect()->back()->withInput()->with('error', 'Veuillez saisir au moins un numéro de destination et un montant.');
+        }
+
+        $source = $this->getNumeroAvecOperateurUtilisateur($numeroSource, $userId);
         if (!$source) {
             return redirect()->back()->withInput()->with('error', 'Le numéro source ne vous appartient pas.');
         }
 
-        $destination = $this->numeroUserModel->findByNumero($numeroDestination);
-        if (!$destination) {
+        $transfers = [];
+        foreach ($destinations as $index => $rawDestination) {
+            $destinationNumero = $this->normalizeNumero($rawDestination);
+            $montant = isset($montants[$index]) ? (float) $montants[$index] : 0;
+
+            if ($destinationNumero === '' || $montant <= 0) {
+                continue;
+            }
+
+            if ($destinationNumero === $source['numero']) {
+                return redirect()->back()->withInput()->with('error', 'Le numéro source et le numéro destinataire doivent être différents.');
+            }
+
+            $transfers[] = [
+                'destination' => $destinationNumero,
+                'montant' => $montant,
+            ];
+        }
+
+        if (empty($transfers)) {
+            return redirect()->back()->withInput()->with('error', 'Aucun transfert valide n’a été saisi.');
+        }
+
+        $firstDestination = $transfers[0]['destination'];
+        $firstDestinationData = $this->getNumeroAvecOperateur($firstDestination);
+        if (!$firstDestinationData) {
             return redirect()->back()->withInput()->with('error', 'Le numéro destinataire est introuvable.');
         }
 
-        if ($source['numero'] === $destination['numero']) {
-            return redirect()->back()->withInput()->with('error', 'Le numéro source et le numéro destinataire doivent être différents.');
+        $destinationOperatorId = (int) ($firstDestinationData['id_prefixe'] ?? 0);
+        foreach ($transfers as $transfer) {
+            $destinationData = $this->getNumeroAvecOperateur($transfer['destination']);
+            if (!$destinationData || (int) ($destinationData['id_prefixe'] ?? 0) !== $destinationOperatorId) {
+                return redirect()->back()->withInput()->with('error', 'Les transferts multiples ne sont autorisés que vers des numéros du même opérateur.');
+            }
         }
 
         $soldeActuel = $this->historiqueOperationModel->getBalanceByNumero($numeroSource);
-        if ($montant > $soldeActuel) {
-            return redirect()->back()->withInput()->with('error', 'Solde insuffisant pour effectuer ce transfert.');
+        $totalDebit = 0;
+        $transferDetails = [];
+
+        foreach ($transfers as $transfer) {
+            $destinationData = $this->getNumeroAvecOperateur($transfer['destination']);
+            $fees = $this->calculateTransfertAmounts($source, $destinationData, $transfer['montant'], $includeWithdrawalFee);
+            $totalDebit += $fees['totalDebit'];
+            $transferDetails[] = [
+                'destinationData' => $destinationData,
+                'montant' => $transfer['montant'],
+                'fees' => $fees,
+            ];
+        }
+
+        if ($totalDebit > $soldeActuel) {
+            return redirect()->back()->withInput()->with('error', 'Solde insuffisant pour couvrir le montant total et les frais.');
         }
 
         $db = db_connect();
         $db->transStart();
 
-        $this->historiqueOperationModel->insert([
-            'id_user' => $userId,
-            'id_operation' => $this->getOperationId('Transfert'),
-            'valeur' => $montant,
-            'numero_source' => $source['numero'],
-            'numero_destination' => $destination['numero'],
-            'reference' => $reference !== '' ? $reference : 'Transfert sortant',
-            'sens' => 'sortie',
-        ]);
+        foreach ($transferDetails as $detail) {
+            $destinationData = $detail['destinationData'];
+            $montant = $detail['montant'];
+            $fees = $detail['fees'];
 
-        $this->historiqueOperationModel->insert([
-            'id_user' => (int) $destination['id_user'],
-            'id_operation' => $this->getOperationId('Transfert'),
-            'valeur' => $montant,
-            'numero_source' => $source['numero'],
-            'numero_destination' => $destination['numero'],
-            'reference' => $reference !== '' ? $reference : 'Transfert entrant',
-            'sens' => 'entree',
-        ]);
+            $this->historiqueOperationModel->insert([
+                'id_user' => $userId,
+                'id_operation' => $this->getOperationId('Transfert'),
+                'valeur' => $fees['totalDebit'],
+                'numero_source' => $source['numero'],
+                'numero_destination' => $destinationData['numero'],
+                'reference' => $reference !== '' ? $reference : 'Transfert sortant',
+                'sens' => 'sortie',
+            ]);
+
+            $this->historiqueOperationModel->insert([
+                'id_user' => (int) $destinationData['id_user'],
+                'id_operation' => $this->getOperationId('Transfert'),
+                'valeur' => $montant,
+                'numero_source' => $source['numero'],
+                'numero_destination' => $destinationData['numero'],
+                'reference' => $reference !== '' ? $reference : 'Transfert entrant',
+                'sens' => 'entree',
+            ]);
+
+            if ($fees['transferFee'] > 0 || $fees['withdrawalFee'] > 0) {
+                $this->historiqueOperationModel->insert([
+                    'id_user' => $userId,
+                    'id_operation' => $this->getOperationId('Transfert'),
+                    'valeur' => $fees['transferFee'] + $fees['withdrawalFee'],
+                    'numero_source' => $source['numero'],
+                    'numero_destination' => $destinationData['numero'],
+                    'reference' => 'Frais de transfert: ' . number_format($fees['transferFee'], 2, ',', ' ') . ' Ar, frais de retrait: ' . number_format($fees['withdrawalFee'], 2, ',', ' ') . ' Ar',
+                    'sens' => 'sortie',
+                ]);
+            }
+        }
 
         $db->transComplete();
 
@@ -404,7 +515,7 @@ class ClientOfficeController extends BaseController
             return redirect()->back()->withInput()->with('error', 'Le transfert a échoué.');
         }
 
-        session()->setFlashdata('success', 'Transfert de ' . $montant . ' Ar effectué avec succès.');
+        session()->setFlashdata('success', 'Transfert multiple effectué avec succès. Montant total débité : ' . number_format($totalDebit, 2, ',', ' ') . ' Ar.');
         return redirect()->to('/client-office');
     }
 

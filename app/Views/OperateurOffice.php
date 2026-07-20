@@ -10,6 +10,7 @@ $gainStats = $gainStats ?? [];
 $accountStats = $accountStats ?? [];
 $comptesOperateur = $comptesOperateur ?? [];
 $comptesClients = $comptesClients ?? [];
+$commissionRates = $commissionRates ?? [];
  $clientsOperateur = $clientsOperateur ?? [];
  $clientsOperateurGrouped = $clientsOperateurGrouped ?? [];
 ?>
@@ -231,6 +232,56 @@ $comptesClients = $comptesClients ?? [];
                     <?php endforeach; ?>
                 <?php endif; ?>
             </ul>
+        </div>
+    </div>
+
+    <!-- ============ COMMISSION OPERATEUR ============ -->
+    <div class="tab-pane fade" id="tab-commissions" role="tabpanel" aria-labelledby="tab-btn-commissions">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h3 class="h6 mb-0">Commissions de transfert</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Modifiez le pourcentage de frais appliqué sur les transferts vers chaque opérateur.</p>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Opérateur</th>
+                                <th>Préfixe</th>
+                                <th>Pourcentage (%)</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($commissionRates)): ?>
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">Aucune commission configurée.</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($commissionRates as $commission): ?>
+                                    <tr>
+                                        <td><?= esc($commission['operateur'] ?? '-') ?></td>
+                                        <td><?= esc($commission['prefixe'] ?? '-') ?></td>
+                                        <td>
+                                            <form method="post" action="<?= base_url('operateur-office') ?>" class="d-flex align-items-center gap-2 mb-0">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="action" value="commission">
+                                                <input type="hidden" name="commission_id" value="<?= esc($commission['id'] ?? '') ?>">
+                                                <input type="hidden" name="id_operateur" value="<?= esc($commission['id_operateur'] ?? $commission['id']) ?>">
+                                                <input type="number" step="0.01" min="0" name="pourcentage" value="<?= esc(number_format((float) ($commission['pourcentage'] ?? 0), 2, '.', '')) ?>" class="form-control form-control-sm" style="width: 120px;" required>
+                                        </td>
+                                        <td class="text-end">
+                                                <button type="submit" class="btn btn-sm btn-outline-primary">Enregistrer</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\BaremeFraisModel;
+use App\Models\CommissionOperateurModel;
 use App\Models\HistoriqueOperationModel;
 use App\Models\NumeroUserModel;
 use App\Models\OperateurModel;
@@ -15,6 +17,7 @@ class OperateurOfficeController extends BaseController
     protected $numeroUserModel;
     protected $historiqueOperationModel;
     protected $typeOperationModel;
+    protected $commissionOperateurModel;
 
     public function __construct()
     {
@@ -23,6 +26,7 @@ class OperateurOfficeController extends BaseController
         $this->numeroUserModel = new NumeroUserModel();
         $this->historiqueOperationModel = new HistoriqueOperationModel();
         $this->typeOperationModel = new TypeOperationModel();
+        $this->commissionOperateurModel = new CommissionOperateurModel();
     }
 
     private function guardOperateurSession(): ?\CodeIgniter\HTTP\RedirectResponse
@@ -89,6 +93,25 @@ class OperateurOfficeController extends BaseController
             ->orderBy('users.nom', 'ASC')
             ->findAll();
 
+        $commissionRates = [];
+        foreach ($prefixes as $prefix) {
+            $commissionRates[$prefix['id']] = [
+                'id' => null,
+                'id_operateur' => $prefix['id'],
+                'pourcentage' => 0.0,
+                'operateur' => $prefix['operateur'],
+                'prefixe' => $prefix['prefixe'],
+            ];
+        }
+
+        $existingCommissions = $this->commissionOperateurModel->findAll();
+        foreach ($existingCommissions as $commission) {
+            if (isset($commissionRates[$commission['id_operateur']])) {
+                $commissionRates[$commission['id_operateur']]['id'] = $commission['id'];
+                $commissionRates[$commission['id_operateur']]['pourcentage'] = (float) $commission['pourcentage'];
+            }
+        }
+
         // Clients appartenant aux mêmes opérateurs que l'opérateur connecté
         $clientsOperateur = [];
         if ($userId !== null) {
@@ -150,6 +173,7 @@ class OperateurOfficeController extends BaseController
             'accountStats' => $accountStats,
             'comptesOperateur' => $comptesOperateur,
             'comptesClients' => $comptesClients,
+            'commissionRates' => array_values($commissionRates),
             'clientsOperateur' => $clientsOperateur,
             'clientsOperateurGrouped' => $clientsOperateurGrouped,
         ];
@@ -195,6 +219,28 @@ class OperateurOfficeController extends BaseController
                 $redirect = redirect()->to('/operateur-office#types')->with('success', 'Type d\'opération créé avec succès.');
             } else {
                 $redirect = redirect()->to('/operateur-office#types')->withInput()->with('error', $this->getValidationError());
+            }
+        }
+
+        if ($redirect === null && $action === 'commission') {
+            $commissionId = $this->request->getPost('commission_id');
+            $operateurId = (int) $this->request->getPost('id_operateur');
+            $pourcentage = (float) $this->request->getPost('pourcentage');
+
+            if ($operateurId <= 0 || $pourcentage < 0) {
+                $redirect = redirect()->to('/operateur-office#commissions')->withInput()->with('error', 'Données de commission invalides.');
+            } else {
+                $data = [
+                    'id_operateur' => $operateurId,
+                    'pourcentage' => $pourcentage,
+                ];
+
+                if (!empty($commissionId)) {
+                    $data['id'] = (int) $commissionId;
+                }
+
+                $this->commissionOperateurModel->save($data);
+                $redirect = redirect()->to('/operateur-office#commissions')->with('success', 'Commission mise à jour avec succès.');
             }
         }
 

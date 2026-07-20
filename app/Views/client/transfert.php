@@ -84,14 +84,26 @@
             <?= csrf_field() ?>
             <input type="hidden" name="numero_source" value="<?= esc($numeroActif['numero']) ?>">
 
-            <div class="field" style="margin-bottom: 1rem;">
-                <label for="numero_destination">Numéro du destinataire</label>
-                <input type="text" name="numero_destination" id="numero_destination" placeholder="Ex: 0331234567" required>
+            <div id="transfert-multiple-items">
+                <div class="field" style="margin-bottom: 1rem;">
+                    <label for="destinations-0">Numéro du destinataire</label>
+                    <input type="text" name="destinations[]" id="destinations-0" placeholder="Ex: 1234567" required>
+                </div>
+
+                <div class="field" style="margin-bottom: 1rem;">
+                    <label for="montants-0">Montant (Ar)</label>
+                    <input type="number" name="montants[]" id="montants-0" min="1" step="1" required>
+                </div>
             </div>
 
-            <div class="field" style="margin-bottom: 1rem;">
-                <label for="montant">Montant (Ar)</label>
-                <input type="number" name="montant" id="montant" min="1" step="1" required>
+            <button type="button" class="submit-btn" id="add-transfer-line" style="background: #4d7cfe;">Ajouter un autre destinataire</button>
+
+            <div class="field mb-3" style="margin-top: 1rem;">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1" name="include_withdrawal_fee" id="include_withdrawal_fee">
+                    <label class="form-check-label" for="include_withdrawal_fee">Inclure les frais de retrait si le destinataire est d'un autre opérateur</label>
+                </div>
+                <div class="form-text">Le montant total débité inclura les frais de transfert et, si nécessaire, les frais de retrait.</div>
             </div>
 
             <div class="field">
@@ -104,6 +116,32 @@
                 <a href="<?= base_url('client-office') ?>" class="pill pill-neutral"><i class="fas fa-arrow-left"></i> Annuler</a>
             </div>
         </form>
+
+        <script>
+            document.getElementById('add-transfer-line').addEventListener('click', function () {
+                const container = document.getElementById('transfert-multiple-items');
+                const index = container.querySelectorAll('[name="destinations[]"]').length;
+
+                const destinationField = document.createElement('div');
+                destinationField.className = 'field';
+                destinationField.style.marginBottom = '1rem';
+                destinationField.innerHTML = `
+                    <label for="destinations-${index}">Numéro du destinataire</label>
+                    <input type="text" name="destinations[]" id="destinations-${index}" placeholder="Ex: 0331234567" required>
+                `;
+
+                const montantField = document.createElement('div');
+                montantField.className = 'field';
+                montantField.style.marginBottom = '1rem';
+                montantField.innerHTML = `
+                    <label for="montants-${index}">Montant (Ar)</label>
+                    <input type="number" name="montants[]" id="montants-${index}" min="1" step="1" required>
+                `;
+
+                container.appendChild(destinationField);
+                container.appendChild(montantField);
+            });
+        </script>
     <?php else: ?>
         <div class="notice">Aucun numéro n’est disponible pour effectuer un transfert.</div>
     <?php endif; ?>
