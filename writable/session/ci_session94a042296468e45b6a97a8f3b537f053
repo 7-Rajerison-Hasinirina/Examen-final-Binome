@@ -1,0 +1,1 @@
+user|a:6:{s:2:"id";s:1:"2";s:3:"nom";s:12:"Bruno Martin";s:5:"email";s:23:"brunomartin@example.com";s:9:"id_statut";s:1:"1";s:13:"porte_monnaie";s:7:"1500.00";s:11:"option_gold";i:15;}__ci_last_regenerate|i:1778499962;_ci_previous_url|s:28:"http://localhost:8080/regime";objectif|a:2:{s:4:"type";s:13:"reduire_poids";s:6:"valeur";s:2:"10";}
