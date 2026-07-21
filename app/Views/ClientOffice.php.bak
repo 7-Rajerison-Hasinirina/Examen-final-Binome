@@ -439,7 +439,7 @@
     $flashError = session()->getFlashdata('error');
     ?>
 
-    
+    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="<?= base_url('/') ?>">
@@ -459,10 +459,10 @@
 
     <div class="container-fluid">
         <div class="row">
-            
+            <!-- Sidebar -->
             <div class="col-lg-3">
                 <div class="sidebar">
-                    
+                    <!-- Informations Utilisateur -->
                     <div class="sidebar-title">
                         <i class="fas fa-user"></i> Vos Informations
                     </div>
@@ -473,7 +473,7 @@
                         </div>
                     </div>
 
-                    
+                    <!-- Vos Numéros -->
                     <div class="sidebar-title" style="margin-top: 2rem;">
                         <i class="fas fa-phone"></i> Vos Numéros
                     </div>
@@ -491,7 +491,7 @@
                         <div class="text-muted" style="font-size: 0.9rem;">Aucun numéro enregistré</div>
                     <?php endif; ?>
 
-                    
+                    <!-- Types d'Opération -->
                     <div class="sidebar-title" style="margin-top: 2rem;">
                         <i class="fas fa-exchange-alt"></i> Opérations Disponibles
                     </div>
@@ -505,10 +505,10 @@
                 </div>
             </div>
 
-            
+            <!-- Main Content -->
             <div class="col-lg-9">
                 <div class="main-content">
-                    
+                    <!-- Messages Flash -->
                     <?php if ($flashSuccess): ?>
                         <div class="alert alert-success" role="alert">
                             <i class="fas fa-check-circle"></i>
@@ -523,14 +523,14 @@
                         </div>
                     <?php endif; ?>
 
-                    
+                    <!-- Page Title -->
                     <div class="page-title">
                         <i class="fas fa-chart-line"></i> Tableau de Bord Client
                     </div>
 
-                    
+                    <!-- Action Cards -->
                     <div class="action-grid">
-                        
+                        <!-- Dépôt -->
                         <a href="<?= base_url('client-office/depot') ?>" class="action-card">
                             <div class="action-icon">
                                 <i class="fas fa-circle-plus"></i>
@@ -539,7 +539,7 @@
                             <div class="action-description">Créditez votre compte</div>
                         </a>
 
-                        
+                        <!-- Voir Solde -->
                         <a href="<?= base_url('client-office/solde') ?>" class="action-card">
                             <div class="action-icon">
                                 <i class="fas fa-wallet"></i>
@@ -548,7 +548,7 @@
                             <div class="action-description">Consultez votre solde actuel</div>
                         </a>
 
-                        
+                        <!-- Retrait -->
                         <a href="<?= base_url('client-office/retrait') ?>" class="action-card">
                             <div class="action-icon">
                                 <i class="fas fa-money-bill-wave"></i>
@@ -557,7 +557,7 @@
                             <div class="action-description">Retirez de l'argent</div>
                         </a>
 
-                        
+                        <!-- Transfert -->
                         <a href="<?= base_url('client-office/transfert') ?>" class="action-card">
                             <div class="action-icon">
                                 <i class="fas fa-exchange-alt"></i>
@@ -566,7 +566,7 @@
                             <div class="action-description">Transférez de l'argent</div>
                         </a>
 
-                        
+                        <!-- Historique -->
                         <a href="<?= base_url('client-office/historique') ?>" class="action-card">
                             <div class="action-icon">
                                 <i class="fas fa-history"></i>

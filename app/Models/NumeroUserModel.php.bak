@@ -39,7 +39,9 @@ class NumeroUserModel extends Model
         ]
     ];
 
-    
+    /**
+     * Trouver un utilisateur par préfixe et numéro
+     */
     public function findByPrefixeAndNumero($idPrefixe, $numero)
     {
         return $this->select('numero_user.*, users.id as user_id, users.nom, users.id_role')
@@ -78,7 +80,9 @@ class NumeroUserModel extends Model
             ->first();
     }
 
-    
+    /**
+     * Récupérer tous les numéros d'un utilisateur
+     */
     public function getNumerosByUser($idUser)
     {
         return $this->select('numero_user.*, operateur.prefixe, operateur.operateur')

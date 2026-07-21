@@ -17,7 +17,7 @@ $commissionRates = $commissionRates ?? [];
 
 <div class="tab-content" id="operateur-tabs-content">
 
-    
+    <!-- ============ TABLEAU DE BORD (affiché par défaut) ============ -->
     <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-btn-dashboard">
 
         <div class="card text-bg-primary mb-4">
@@ -139,7 +139,7 @@ $commissionRates = $commissionRates ?? [];
         </div>
     </div>
 
-    
+    <!-- ============ CONFIGURATION DES PREFIXES ============ -->
     <div class="tab-pane fade" id="tab-prefixes" role="tabpanel" aria-labelledby="tab-btn-prefixes">
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white">
@@ -195,7 +195,7 @@ $commissionRates = $commissionRates ?? [];
         </div>
     </div>
 
-    
+    <!-- ============ TYPES D'OPERATIONS ============ -->
     <div class="tab-pane fade" id="tab-types" role="tabpanel" aria-labelledby="tab-btn-types">
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white">
@@ -235,7 +235,7 @@ $commissionRates = $commissionRates ?? [];
         </div>
     </div>
 
-    
+    <!-- ============ COMMISSION OPERATEUR ============ -->
     <div class="tab-pane fade" id="tab-commissions" role="tabpanel" aria-labelledby="tab-btn-commissions">
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white">
@@ -285,17 +285,17 @@ $commissionRates = $commissionRates ?? [];
         </div>
     </div>
 
-    
+    <!-- ============ SITUATION DE GAIN ============ -->
     <div class="tab-pane fade" id="tab-gains" role="tabpanel" aria-labelledby="tab-btn-gains">
         <div class="row row-cols-1 row-cols-md-3 g-3">
             <div class="col">
                 <div class="card h-100 shadow-sm border-success">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-semibold">Gain total</span>
-                                <span class="badge text-bg-success">Global</span>
+                            <span class="fw-semibold">Total entrées</span>
+                            <span class="badge text-bg-success">Gain brut</span>
                         </div>
-                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['total_gain'] ?? 0), 2, ',', ' ') ?> Ar</div>
+                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['total_entrees'] ?? 0), 2, ',', ' ') ?> Ar</div>
                     </div>
                 </div>
             </div>
@@ -303,10 +303,10 @@ $commissionRates = $commissionRates ?? [];
                 <div class="card h-100 shadow-sm border-warning">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-semibold">Gain retrait</span>
-                                <span class="badge text-bg-warning">Retraits</span>
+                            <span class="fw-semibold">Total sorties</span>
+                            <span class="badge text-bg-warning">Pertes</span>
                         </div>
-                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['gain_retrait'] ?? 0), 2, ',', ' ') ?> Ar</div>
+                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['total_sorties'] ?? 0), 2, ',', ' ') ?> Ar</div>
                     </div>
                 </div>
             </div>
@@ -314,17 +314,17 @@ $commissionRates = $commissionRates ?? [];
                 <div class="card h-100 shadow-sm border-primary">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-semibold">Gain transfert</span>
-                                <span class="badge text-bg-primary">Transferts</span>
+                            <span class="fw-semibold">Gain net</span>
+                            <span class="badge text-bg-primary">Net</span>
                         </div>
-                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['gain_transfert'] ?? 0), 2, ',', ' ') ?> Ar</div>
+                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['gain_net'] ?? 0), 2, ',', ' ') ?> Ar</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    
+    <!-- ============ SITUATION DES COMPTES ============ -->
     <div class="tab-pane fade" id="tab-comptes" role="tabpanel" aria-labelledby="tab-btn-comptes">
         <div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
             <div class="col">
@@ -379,7 +379,7 @@ $commissionRates = $commissionRates ?? [];
         </div>
     </div>
 
-    
+    <!-- ============ OPERATIONS RECENTES (liste complète) ============ -->
     <div class="tab-pane fade" id="tab-operations" role="tabpanel" aria-labelledby="tab-btn-operations">
         <div class="card shadow-sm">
             <div class="card-header bg-white">
@@ -428,7 +428,7 @@ $commissionRates = $commissionRates ?? [];
         </div>
     </div>
 
-    
+    <!-- ============ CLIENTS DE L'OPERATEUR ============ -->
     <div class="tab-pane fade" id="tab-clients" role="tabpanel" aria-labelledby="tab-btn-clients">
         <div class="card shadow-sm">
             <div class="card-header bg-white">

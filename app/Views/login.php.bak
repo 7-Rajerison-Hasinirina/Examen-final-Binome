@@ -210,7 +210,7 @@
 </head>
 <body>
 <div class="login-shell">
-    
+    <!-- Header avec logo -->
     <div class="login-header">
         <div class="login-header-icon">
             <i class="fas fa-coins"></i>
@@ -219,12 +219,12 @@
         <p>Système de Transfert Monétaire</p>
     </div>
 
-    
+    <!-- Formulaire de connexion -->
     <div class="login-panel">
         <form action="<?= base_url('login/valider') ?>" method="post">
             <?= csrf_field() ?>
 
-            
+            <!-- Nom -->
             <div class="form-group">
                 <label for="nom">
                     <i class="fas fa-user" style="color: var(--primary); margin-right: 0.5rem;"></i>Nom
@@ -238,7 +238,7 @@
                 >
             </div>
 
-            
+            <!-- Préfixe -->
             <div class="form-group">
                 <label for="prefixe">
                     <i class="fas fa-mobile-alt" style="color: var(--primary); margin-right: 0.5rem;"></i>Opérateur Mobile
@@ -253,7 +253,7 @@
                 </select>
             </div>
 
-            
+            <!-- Numéro de téléphone -->
             <div class="form-group">
                 <label for="numero">
                     <i class="fas fa-phone" style="color: var(--primary); margin-right: 0.5rem;"></i>Numéro de Téléphone
@@ -267,7 +267,7 @@
                 >
             </div>
 
-            
+            <!-- Bouton de soumission -->
             <div class="form-actions">
                 <button type="submit" class="submit-btn">
                     <i class="fas fa-sign-in-alt"></i> Se Connecter
@@ -275,7 +275,7 @@
             </div>
         </form>
 
-        
+        <!-- Information utile -->
         <div class="login-info">
             <i class="fas fa-info-circle"></i>
             <strong>Premier accès ?</strong><br>

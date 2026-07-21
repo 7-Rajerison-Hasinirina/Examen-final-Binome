@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Models\BaremeFraisModel;
 use App\Models\CommissionOperateurModel;
-use App\Models\GainModel;
 use App\Models\HistoriqueOperationModel;
 use App\Models\NumeroUserModel;
 use App\Models\TypeOperationModel;
@@ -17,7 +16,6 @@ class ClientOfficeController extends BaseController
     protected $historiqueOperationModel;
     protected $baremeFraisModel;
     protected $commissionOperateurModel;
-    protected $gainModel;
 
     public function __construct()
     {
@@ -26,7 +24,6 @@ class ClientOfficeController extends BaseController
         $this->historiqueOperationModel = new HistoriqueOperationModel();
         $this->baremeFraisModel = new BaremeFraisModel();
         $this->commissionOperateurModel = new CommissionOperateurModel();
-        $this->gainModel = new GainModel();
     }
 
     private function guardClientSession(): ?RedirectResponse
@@ -145,7 +142,9 @@ class ClientOfficeController extends BaseController
         ];
     }
 
-    
+    /**
+     * Afficher le tableau de bord client
+     */
     public function index()
     {
         if ($redirect = $this->guardClientSession()) {
@@ -168,7 +167,9 @@ class ClientOfficeController extends BaseController
         return view('ClientOffice', $data);
     }
 
-    
+    /**
+     * Afficher le solde
+     */
     public function solde()
     {
         if ($redirect = $this->guardClientSession()) {
@@ -190,7 +191,9 @@ class ClientOfficeController extends BaseController
         return view('client/solde', $data);
     }
 
-    
+    /**
+     * Afficher le formulaire de retrait
+     */
     public function retrait()
     {
         if ($redirect = $this->guardClientSession()) {
@@ -212,7 +215,9 @@ class ClientOfficeController extends BaseController
         return view('client/retrait', $data);
     }
 
-    
+    /**
+     * Traiter le retrait
+     */
     public function traiterRetrait()
     {
         if (!$this->request->is('post')) {
@@ -236,21 +241,14 @@ class ClientOfficeController extends BaseController
         $montant = (float) $this->request->getPost('montant');
         $raison = trim((string) $this->request->getPost('raison'));
 
-        $numero = $this->getNumeroAvecOperateurUtilisateur($numeroRetrait, $userId);
+        $numero = $this->numeroUserModel->findByNumeroAndUser($numeroRetrait, $userId);
         if (!$numero) {
             return redirect()->back()->withInput()->with('error', 'Le numéro sélectionné ne vous appartient pas.');
         }
 
         $soldeActuel = $this->historiqueOperationModel->getBalanceByNumero($numeroRetrait);
-        $retraitFrais = $this->baremeFraisModel->getFraisForOperation(
-            (int) ($numero['id_prefixe'] ?? 0),
-            $this->getOperationId('Retrait'),
-            $montant
-        );
-        $totalDebit = $montant + $retraitFrais;
-
-        if ($totalDebit > $soldeActuel) {
-            return redirect()->back()->withInput()->with('error', 'Solde insuffisant pour effectuer ce retrait et couvrir les frais.');
+        if ($montant > $soldeActuel) {
+            return redirect()->back()->withInput()->with('error', 'Solde insuffisant pour effectuer ce retrait.');
         }
 
         $db = db_connect();
@@ -265,35 +263,19 @@ class ClientOfficeController extends BaseController
             'sens' => 'sortie',
         ]);
 
-        if ($retraitFrais > 0) {
-            $this->historiqueOperationModel->insert([
-                'id_user' => $userId,
-                'id_operation' => $this->getOperationId('Retrait'),
-                'valeur' => $retraitFrais,
-                'numero_source' => $numero['numero'],
-                'reference' => 'Frais de retrait',
-                'sens' => 'sortie',
-            ]);
-
-            $this->gainModel->insert([
-                'id_type_operation' => $this->getOperationId('Retrait'),
-                'montant' => $retraitFrais,
-                'operateur' => (string) ($numero['operateur'] ?? ''),
-                'date' => date('Y-m-d H:i:s'),
-            ]);
-        }
-
         $db->transComplete();
 
         if ($db->transStatus() === false) {
             return redirect()->back()->withInput()->with('error', 'Le retrait a échoué.');
         }
 
-        session()->setFlashdata('success', 'Retrait de ' . $montant . ' Ar effectué avec succès. Frais: ' . number_format($retraitFrais, 2, ',', ' ') . ' Ar.');
+        session()->setFlashdata('success', 'Retrait de ' . $montant . ' Ar effectué avec succès.');
         return redirect()->to('/client-office');
     }
 
-    
+    /**
+     * Afficher le formulaire de dépôt
+     */
     public function depot()
     {
         if ($redirect = $this->guardClientSession()) {
@@ -315,7 +297,9 @@ class ClientOfficeController extends BaseController
         return view('client/depot', $data);
     }
 
-    
+    /**
+     * Traiter le dépôt
+     */
     public function traiterDepot()
     {
         if (!$this->request->is('post')) {
@@ -366,7 +350,9 @@ class ClientOfficeController extends BaseController
         return redirect()->to('/client-office');
     }
 
-    
+    /**
+     * Afficher le formulaire de transfert
+     */
     public function transfert()
     {
         if ($redirect = $this->guardClientSession()) {
@@ -388,7 +374,9 @@ class ClientOfficeController extends BaseController
         return view('client/transfert', $data);
     }
 
-    
+    /**
+     * Traiter le transfert
+     */
     public function traiterTransfert()
     {
         if (!$this->request->is('post')) {
@@ -518,13 +506,6 @@ class ClientOfficeController extends BaseController
                     'reference' => 'Frais de transfert: ' . number_format($fees['transferFee'], 2, ',', ' ') . ' Ar, frais de retrait: ' . number_format($fees['withdrawalFee'], 2, ',', ' ') . ' Ar',
                     'sens' => 'sortie',
                 ]);
-
-                $this->gainModel->insert([
-                    'id_type_operation' => $this->getOperationId('Transfert'),
-                    'montant' => $fees['transferFee'] + $fees['withdrawalFee'],
-                    'operateur' => (string) ($source['operateur'] ?? ''),
-                    'date' => date('Y-m-d H:i:s'),
-                ]);
             }
         }
 
@@ -538,7 +519,9 @@ class ClientOfficeController extends BaseController
         return redirect()->to('/client-office');
     }
 
-    
+    /**
+     * Afficher l'historique
+     */
     public function historique()
     {
         if ($redirect = $this->guardClientSession()) {
@@ -588,7 +571,9 @@ class ClientOfficeController extends BaseController
         return redirect()->back()->with('error', 'Numéro invalide ou non autorisé.');
     }
 
-    
+    /**
+     * Déconnexion
+     */
     public function logout()
     {
         session()->destroy();
