@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\BaremeFraisModel;
 use App\Models\CommissionOperateurModel;
+use App\Models\GainModel;
 use App\Models\HistoriqueOperationModel;
 use App\Models\NumeroUserModel;
 use App\Models\OperateurModel;
@@ -18,6 +19,7 @@ class OperateurOfficeController extends BaseController
     protected $historiqueOperationModel;
     protected $typeOperationModel;
     protected $commissionOperateurModel;
+    protected $gainModel;
 
     public function __construct()
     {
@@ -27,6 +29,7 @@ class OperateurOfficeController extends BaseController
         $this->historiqueOperationModel = new HistoriqueOperationModel();
         $this->typeOperationModel = new TypeOperationModel();
         $this->commissionOperateurModel = new CommissionOperateurModel();
+        $this->gainModel = new GainModel();
     }
 
     private function guardOperateurSession(): ?\CodeIgniter\HTTP\RedirectResponse
@@ -66,11 +69,11 @@ class OperateurOfficeController extends BaseController
             ->orderBy('historique_operation.id', 'DESC')
             ->findAll(8);
 
-        // Par défaut, totaux globaux (seront recalculés pour l'opérateur connecté si possible)
+        // Par défaut, totaux de gain
         $gainStats = [
-            'total_entrees' => 0,
-            'total_sorties' => 0,
-            'gain_net' => 0,
+            'total_gain' => 0,
+            'gain_retrait' => 0,
+            'gain_transfert' => 0,
         ];
 
         $accountStats = [
@@ -114,6 +117,8 @@ class OperateurOfficeController extends BaseController
 
         
         $clientsOperateur = [];
+        $prefixIdsForOperator = [];
+        $operatorNames = [];
         if ($userId !== null) {
             $myNums = $this->numeroUserModel->getNumerosByUser($userId);
             $prefixIds = array_values(array_unique(array_column($myNums, 'id_prefixe')));
@@ -165,37 +170,19 @@ class OperateurOfficeController extends BaseController
                 $clientsOperateurGrouped = array_values($clientsOperateurGrouped);
             }
 
-        // Calculer les totaux (dépôts / retraits / frais) pour l'opérateur connecté
+        // Calculer les totaux de gain pour l'opérateur connecté
         $gainStats = [
-            'total_entrees' => 0,
-            'total_sorties' => 0,
-            'gain_net' => 0,
+            'total_gain' => 0,
+            'gain_retrait' => 0,
+            'gain_transfert' => 0,
         ];
 
-        if ($userId !== null && !empty($prefixIdsForOperator)) {
-            // Récupère tous les numéros liés aux préfixes de cet opérateur
-            $numsRows = $this->numeroUserModel->whereIn('id_prefixe', $prefixIdsForOperator)->findAll();
-            $filterNumeros = array_map(function ($r) {
-                return (string) ($r['numero'] ?? '');
-            }, $numsRows);
-
-            if (!empty($filterNumeros)) {
-                // Construire la requête filtrée sur numero_source ou numero_destination
-                $builder = $this->historiqueOperationModel->groupStart()
-                    ->whereIn('numero_destination', $filterNumeros)
-                    ->orWhereIn('numero_source', $filterNumeros)
-                    ->groupEnd()
-                    ->select(
-                        "COALESCE(SUM(CASE WHEN COALESCE(sens, 'entree') = 'entree' THEN valeur ELSE 0 END), 0) AS total_entrees,\n                        COALESCE(SUM(CASE WHEN COALESCE(sens, 'sortie') = 'sortie' THEN valeur ELSE 0 END), 0) AS total_sorties,\n                        COALESCE(SUM(CASE WHEN COALESCE(sens, 'entree') = 'entree' THEN valeur ELSE -valeur END), 0) AS gain_net",
-                        false
-                    );
-
-                $row = $builder->first();
-                if ($row) {
-                    $gainStats['total_entrees'] = (float) ($row['total_entrees'] ?? 0);
-                    $gainStats['total_sorties'] = (float) ($row['total_sorties'] ?? 0);
-                    $gainStats['gain_net'] = (float) ($row['gain_net'] ?? 0);
-                }
+        if (!empty($operatorNames)) {
+            $row = $this->gainModel->getTotalGainByOperateurs($operatorNames);
+            if ($row) {
+                $gainStats['total_gain'] = (float) ($row['total_gain'] ?? 0);
+                $gainStats['gain_retrait'] = (float) ($row['total_retrait_gain'] ?? 0);
+                $gainStats['gain_transfert'] = (float) ($row['total_transfert_gain'] ?? 0);
             }
         }
 

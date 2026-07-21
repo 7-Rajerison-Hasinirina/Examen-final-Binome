@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\BaremeFraisModel;
 use App\Models\CommissionOperateurModel;
+use App\Models\GainModel;
 use App\Models\HistoriqueOperationModel;
 use App\Models\NumeroUserModel;
 use App\Models\TypeOperationModel;
@@ -16,6 +17,7 @@ class ClientOfficeController extends BaseController
     protected $historiqueOperationModel;
     protected $baremeFraisModel;
     protected $commissionOperateurModel;
+    protected $gainModel;
 
     public function __construct()
     {
@@ -24,6 +26,7 @@ class ClientOfficeController extends BaseController
         $this->historiqueOperationModel = new HistoriqueOperationModel();
         $this->baremeFraisModel = new BaremeFraisModel();
         $this->commissionOperateurModel = new CommissionOperateurModel();
+        $this->gainModel = new GainModel();
     }
 
     private function guardClientSession(): ?RedirectResponse
@@ -233,14 +236,21 @@ class ClientOfficeController extends BaseController
         $montant = (float) $this->request->getPost('montant');
         $raison = trim((string) $this->request->getPost('raison'));
 
-        $numero = $this->numeroUserModel->findByNumeroAndUser($numeroRetrait, $userId);
+        $numero = $this->getNumeroAvecOperateurUtilisateur($numeroRetrait, $userId);
         if (!$numero) {
             return redirect()->back()->withInput()->with('error', 'Le numéro sélectionné ne vous appartient pas.');
         }
 
         $soldeActuel = $this->historiqueOperationModel->getBalanceByNumero($numeroRetrait);
-        if ($montant > $soldeActuel) {
-            return redirect()->back()->withInput()->with('error', 'Solde insuffisant pour effectuer ce retrait.');
+        $retraitFrais = $this->baremeFraisModel->getFraisForOperation(
+            (int) ($numero['id_prefixe'] ?? 0),
+            $this->getOperationId('Retrait'),
+            $montant
+        );
+        $totalDebit = $montant + $retraitFrais;
+
+        if ($totalDebit > $soldeActuel) {
+            return redirect()->back()->withInput()->with('error', 'Solde insuffisant pour effectuer ce retrait et couvrir les frais.');
         }
 
         $db = db_connect();
@@ -255,13 +265,31 @@ class ClientOfficeController extends BaseController
             'sens' => 'sortie',
         ]);
 
+        if ($retraitFrais > 0) {
+            $this->historiqueOperationModel->insert([
+                'id_user' => $userId,
+                'id_operation' => $this->getOperationId('Retrait'),
+                'valeur' => $retraitFrais,
+                'numero_source' => $numero['numero'],
+                'reference' => 'Frais de retrait',
+                'sens' => 'sortie',
+            ]);
+
+            $this->gainModel->insert([
+                'id_type_operation' => $this->getOperationId('Retrait'),
+                'montant' => $retraitFrais,
+                'operateur' => (string) ($numero['operateur'] ?? ''),
+                'date' => date('Y-m-d H:i:s'),
+            ]);
+        }
+
         $db->transComplete();
 
         if ($db->transStatus() === false) {
             return redirect()->back()->withInput()->with('error', 'Le retrait a échoué.');
         }
 
-        session()->setFlashdata('success', 'Retrait de ' . $montant . ' Ar effectué avec succès.');
+        session()->setFlashdata('success', 'Retrait de ' . $montant . ' Ar effectué avec succès. Frais: ' . number_format($retraitFrais, 2, ',', ' ') . ' Ar.');
         return redirect()->to('/client-office');
     }
 
@@ -489,6 +517,13 @@ class ClientOfficeController extends BaseController
                     'numero_destination' => $destinationData['numero'],
                     'reference' => 'Frais de transfert: ' . number_format($fees['transferFee'], 2, ',', ' ') . ' Ar, frais de retrait: ' . number_format($fees['withdrawalFee'], 2, ',', ' ') . ' Ar',
                     'sens' => 'sortie',
+                ]);
+
+                $this->gainModel->insert([
+                    'id_type_operation' => $this->getOperationId('Transfert'),
+                    'montant' => $fees['transferFee'] + $fees['withdrawalFee'],
+                    'operateur' => (string) ($source['operateur'] ?? ''),
+                    'date' => date('Y-m-d H:i:s'),
                 ]);
             }
         }

@@ -292,10 +292,10 @@ $commissionRates = $commissionRates ?? [];
                 <div class="card h-100 shadow-sm border-success">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-semibold">Total dépôts</span>
-                                <span class="badge text-bg-success">Dépôts</span>
+                            <span class="fw-semibold">Gain total</span>
+                                <span class="badge text-bg-success">Global</span>
                         </div>
-                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['total_entrees'] ?? 0), 2, ',', ' ') ?> Ar</div>
+                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['total_gain'] ?? 0), 2, ',', ' ') ?> Ar</div>
                     </div>
                 </div>
             </div>
@@ -303,10 +303,10 @@ $commissionRates = $commissionRates ?? [];
                 <div class="card h-100 shadow-sm border-warning">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-semibold">Total retraits</span>
+                            <span class="fw-semibold">Gain retrait</span>
                                 <span class="badge text-bg-warning">Retraits</span>
                         </div>
-                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['total_sorties'] ?? 0), 2, ',', ' ') ?> Ar</div>
+                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['gain_retrait'] ?? 0), 2, ',', ' ') ?> Ar</div>
                     </div>
                 </div>
             </div>
@@ -314,10 +314,10 @@ $commissionRates = $commissionRates ?? [];
                 <div class="card h-100 shadow-sm border-primary">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-semibold">Gain frais</span>
-                                <span class="badge text-bg-primary">Frais</span>
+                            <span class="fw-semibold">Gain transfert</span>
+                                <span class="badge text-bg-primary">Transferts</span>
                         </div>
-                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['gain_net'] ?? 0), 2, ',', ' ') ?> Ar</div>
+                        <div class="fs-3 fw-bold"><?= number_format((float) ($gainStats['gain_transfert'] ?? 0), 2, ',', ' ') ?> Ar</div>
                     </div>
                 </div>
             </div>

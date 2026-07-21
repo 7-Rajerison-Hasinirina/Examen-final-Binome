@@ -56,7 +56,14 @@ CREATE TABLE historique_operation (
     FOREIGN KEY (id_operation) REFERENCES type_operation(id)
 );
 
-
+CREATE TABLE gain (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_type_operation INTEGER NOT NULL,
+    montant DECIMAL(10,2) NOT NULL,
+    operateur VARCHAR(50) NOT NULL,
+    date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_type_operation) REFERENCES type_operation(id)
+);
 
 INSERT INTO operateur (prefixe, operateur) VALUES
 ('032', 'Orange Money'),
