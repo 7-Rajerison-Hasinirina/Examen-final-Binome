@@ -112,7 +112,7 @@ class OperateurOfficeController extends BaseController
             }
         }
 
-        
+        // Clients appartenant aux mêmes opérateurs que l'opérateur connecté
         $clientsOperateur = [];
         if ($userId !== null) {
             $myNums = $this->numeroUserModel->getNumerosByUser($userId);
@@ -144,7 +144,7 @@ class OperateurOfficeController extends BaseController
                 }
             }
         }
-            
+            // Grouper les résultats par client (regrouper les numéros par client)
             $clientsOperateurGrouped = [];
             if (!empty($clientsOperateur)) {
                 foreach ($clientsOperateur as $row) {
@@ -247,7 +247,9 @@ class OperateurOfficeController extends BaseController
         return $redirect;
     }
 
-    
+    /**
+     * Afficher le tableau de bord opérateur
+     */
     public function index()
     {
         if ($redirect = $this->guardOperateurSession()) {
@@ -294,7 +296,9 @@ class OperateurOfficeController extends BaseController
         return view('OperateurOffice', $data);
     }
 
-    
+    /**
+     * Déconnexion
+     */
     public function logout()
     {
         session()->destroy();

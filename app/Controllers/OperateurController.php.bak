@@ -29,7 +29,9 @@ class OperateurController extends BaseController
         return view('login', $data);
     }
 
-    
+    /**
+     * Valider et authentifier l'utilisateur
+     */
     public function valider()
     {
         if (!$this->request->is('post')) {
@@ -40,16 +42,16 @@ class OperateurController extends BaseController
         $idPrefixe = $this->request->getPost('id_prefixe');
         $numero = $this->request->getPost('numero');
 
-        
+        // Vérifier si le numéro existe déjà dans numero_user
         $existingNumero = $this->numeroUserModel->findByPrefixeAndNumero($idPrefixe, $numero);
 
         if ($existingNumero) {
-            
+            // L'utilisateur existe déjà
             $userId = $existingNumero['user_id'];
             $idRole = $existingNumero['id_role'];
             $nomUser = $existingNumero['nom'];
 
-            
+            // Stocker les infos en session
             session()->set([
                 'user_id' => $userId,
                 'nom' => $nomUser,
@@ -58,22 +60,22 @@ class OperateurController extends BaseController
                 'id_prefixe' => $idPrefixe
             ]);
 
-            
+            // Redirection selon le rôle
             if ($idRole == 2) {
-                
+                // Client
                 return redirect()->to('/client-office');
             } elseif ($idRole == 3) {
-                
+                // Opérateur
                 return redirect()->to('/operateur-office');
             } else {
-                
+                // Admin ou autre
                 return redirect()->to('/');
             }
         } else {
-            
+            // Créer un nouvel utilisateur (client par défaut - id_role = 2)
             $newUser = [
                 'nom' => $nom,
-                'id_role' => 2  
+                'id_role' => 2  // Client
             ];
 
             $userId = $this->userModel->insert($newUser, true);
@@ -83,7 +85,7 @@ class OperateurController extends BaseController
                 return redirect()->back()->withInput();
             }
 
-            
+            // Créer l'entrée numero_user
             $newNumero = [
                 'id_prefixe' => $idPrefixe,
                 'numero' => $numero,
@@ -93,7 +95,7 @@ class OperateurController extends BaseController
 
             $this->numeroUserModel->insert($newNumero);
 
-            
+            // Stocker les infos en session
             session()->set([
                 'user_id' => $userId,
                 'nom' => $nom,
