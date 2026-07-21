@@ -315,6 +315,16 @@ class ClientOfficeController extends BaseController
         return view('client/depot', $data);
     }
 
+
+    public function pourcentage_epargne(){
+        if ($redirect = $this->guardClientSession()) {
+            return $redirect;
+        }
+
+        $userId = $this->getCurrentUserId();
+    }
+
+
     
     public function traiterDepot()
     {

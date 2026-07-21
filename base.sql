@@ -66,6 +66,22 @@ CREATE TABLE gain (
     FOREIGN KEY (id_type_operation) REFERENCES type_operation(id)
 );
 
+
+CREATE TABLE pourcentage_epargne(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_user INTEGER NOT NULL,
+    pourcentage DECIMAL(3,2),
+    FOREIGN KEY (id_user) REFERENCES users(id)
+);
+
+CREATE TABLE epargne( 
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_user INTEGER NOT NULL,
+    montant DECIMAL(10,2),
+    dates  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_user) REFERENCES users(id)
+);
+
 INSERT INTO operateur (prefixe, operateur) VALUES
 ('032', 'Orange Money'),
 ('033', 'Airtel Money'),
