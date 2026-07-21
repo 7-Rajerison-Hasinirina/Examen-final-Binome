@@ -32,6 +32,10 @@ class CreateBaremeFrais extends Migration
                 'type'       => 'DECIMAL',
                 'constraint' => '10,2',
             ],
+            'pourcentage' => [
+                'type'       => 'DECIMAL',
+                'constraint' => '4,2',
+            ],
             'id_operateur' => [
                 'type'       => 'INTEGER',
                 'constraint' => 11,

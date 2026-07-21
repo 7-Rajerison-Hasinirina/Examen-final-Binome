@@ -37,6 +37,7 @@ CREATE TABLE bareme_frais (
     intervalle1 DECIMAL(10,2) NOT NULL,
     intervalle2 DECIMAL(10,2) NOT NULL,
     frais DECIMAL(10,2) NOT NULL,
+    pourcentage DECIMAL(4,2),
     id_operateur INTEGER NOT NULL,
     FOREIGN KEY (id_type_operation) REFERENCES type_operation(id),
     FOREIGN KEY (id_operateur) REFERENCES operateur(id)
@@ -101,26 +102,26 @@ INSERT INTO numero_user (id_prefixe, numero, id_user) VALUES
 (2, '9999999', 1);
 
 
-INSERT INTO bareme_frais (intervalle1, intervalle2, frais, id_operateur) VALUES
+INSERT INTO bareme_frais (intervalle1, intervalle2, frais, id_operateur, pourcentage) VALUES
 -- Orange Money
-(100, 1000, 50, 1),
-(1001, 5000, 100, 1),
-(5001, 10000, 200, 1),
-(10001, 50000, 500, 1),
+(100, 1000, 50, 1, 10),
+(1001, 5000, 100, 10),
+(5001, 10000, 200, 10),
+(10001, 50000, 500, 10),
 -- Airtel Money
-(100, 1000, 50, 2),
-(1001, 5000, 100, 2),
-(5001, 10000, 200, 2),
-(10001, 50000, 500, 2),
+(100, 1000, 50, 10),
+(1001, 5000, 100, 10),
+(5001, 10000, 200, 10),
+(10001, 50000, 500, 10),
 -- MVola
-(100, 1000, 50, 3),
-(1001, 5000, 100, 3),
-(5001, 10000, 200, 3),
-(10001, 50000, 500, 3),
-(100, 1000, 50, 4),
-(1001, 5000, 100, 4),
-(5001, 10000, 200, 4),
-(10001, 50000, 500, 4);
+(100, 1000, 50, 10),
+(1001, 5000, 100, 10),
+(5001, 10000, 200, 10),
+(10001, 50000, 500, 10),
+(100, 1000, 50, 10),
+(1001, 5000, 100, 10),
+(5001, 10000, 200, 10),
+(10001, 50000, 500, 10);
 
 
 INSERT INTO historique_operation (date, id_user, id_operation, valeur, numero_source, numero_destination, reference, sens) VALUES

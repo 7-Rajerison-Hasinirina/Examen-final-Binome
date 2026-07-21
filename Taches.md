@@ -230,3 +230,13 @@ COTE CLIENT:
     un client yas : 0347777777 a un solde actuel 2000 Ar
     et il souhaite effectuer un transfert de 1500 Ar vers 0348888888 et 500Ar vers 0349999999
 
+Alea
+Promotion pendant transfert au meme operateur , Exemple -10 pourcent 
+Base 10 pourcent 
+si possibe creer une page pour changer le pourcentage ,Bonus
+
+Todo:
+- Correction base:OK
+- Correction fonction dans ClientOfficeController:
+    . calculateTransfertAmounts : En cours
+    . function traiterTransfert() :En cours
