@@ -66,12 +66,12 @@ class OperateurOfficeController extends BaseController
             ->orderBy('historique_operation.id', 'DESC')
             ->findAll(8);
 
-        $gainStats = $this->historiqueOperationModel
-            ->select(
-                "COALESCE(SUM(CASE WHEN COALESCE(sens, 'entree') = 'entree' THEN valeur ELSE 0 END), 0) AS total_entrees,\n                COALESCE(SUM(CASE WHEN COALESCE(sens, 'sortie') = 'sortie' THEN valeur ELSE 0 END), 0) AS total_sorties,\n                COALESCE(SUM(CASE WHEN COALESCE(sens, 'entree') = 'entree' THEN valeur ELSE -valeur END), 0) AS gain_net",
-                false
-            )
-            ->first();
+        // Par défaut, totaux globaux (seront recalculés pour l'opérateur connecté si possible)
+        $gainStats = [
+            'total_entrees' => 0,
+            'total_sorties' => 0,
+            'gain_net' => 0,
+        ];
 
         $accountStats = [
             'total_users' => (new UserModel())->countAllResults(),
@@ -164,6 +164,40 @@ class OperateurOfficeController extends BaseController
                 }
                 $clientsOperateurGrouped = array_values($clientsOperateurGrouped);
             }
+
+        // Calculer les totaux (dépôts / retraits / frais) pour l'opérateur connecté
+        $gainStats = [
+            'total_entrees' => 0,
+            'total_sorties' => 0,
+            'gain_net' => 0,
+        ];
+
+        if ($userId !== null && !empty($prefixIdsForOperator)) {
+            // Récupère tous les numéros liés aux préfixes de cet opérateur
+            $numsRows = $this->numeroUserModel->whereIn('id_prefixe', $prefixIdsForOperator)->findAll();
+            $filterNumeros = array_map(function ($r) {
+                return (string) ($r['numero'] ?? '');
+            }, $numsRows);
+
+            if (!empty($filterNumeros)) {
+                // Construire la requête filtrée sur numero_source ou numero_destination
+                $builder = $this->historiqueOperationModel->groupStart()
+                    ->whereIn('numero_destination', $filterNumeros)
+                    ->orWhereIn('numero_source', $filterNumeros)
+                    ->groupEnd()
+                    ->select(
+                        "COALESCE(SUM(CASE WHEN COALESCE(sens, 'entree') = 'entree' THEN valeur ELSE 0 END), 0) AS total_entrees,\n                        COALESCE(SUM(CASE WHEN COALESCE(sens, 'sortie') = 'sortie' THEN valeur ELSE 0 END), 0) AS total_sorties,\n                        COALESCE(SUM(CASE WHEN COALESCE(sens, 'entree') = 'entree' THEN valeur ELSE -valeur END), 0) AS gain_net",
+                        false
+                    );
+
+                $row = $builder->first();
+                if ($row) {
+                    $gainStats['total_entrees'] = (float) ($row['total_entrees'] ?? 0);
+                    $gainStats['total_sorties'] = (float) ($row['total_sorties'] ?? 0);
+                    $gainStats['gain_net'] = (float) ($row['gain_net'] ?? 0);
+                }
+            }
+        }
 
         return [
             'prefixes' => $prefixes,
