@@ -574,6 +574,15 @@
                             <div class="action-title">Historique</div>
                             <div class="action-description">Consultez vos opérations</div>
                         </a>
+
+
+                        <a href="<?= base_url('/client-office/pourcentage') ?>" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="action-title">Epargne</div>
+                            <div class="action-description">Pourcentage d'épargne </div>
+                        </a>
                     </div>
                 </div>
             </div>

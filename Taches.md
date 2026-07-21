@@ -240,3 +240,47 @@ Todo:
 - Correction fonction dans ClientOfficeController:
     . calculateTransfertAmounts : En cours
     . function traiterTransfert() :En cours
+
+
+==================================================================================================================================================
+
+# Alea 2 3962
+- Notion d'une epargne :
+    - on a une interface : % Epargne -> a enregistrer dans une base: ( c'est le client qui va le choisir )
+        - ref misy vola tong any aminy de , x% anle vola makany amin Epargne any , de ny ambiny mankany @ solde principal 
+        - @ transfert ihany 
+
+# Todolisst:
+- Table a creer: 
+[ok]   - pourcentage_epargne ( id, id_user, pourcentage )
+[ok]   - epargne ( id, id_user, montant , date  )
+
+- Models:
+[ok]    - EpargneModel.php:
+
+- Views: 
+    ClientOffice.php:
+[ok]        1- ajout Menu: % Epargne
+
+    client/epargne.php
+[ok]        2- Formulaire Pourcentage Epargne: ( client-office/pourcentage)
+                - Pourcentage 
+                - Bouton Enregistrer -> 
+                - Bouton Annuler
+
+- Routes.php:
+[ok]    $routes->post('/client-office/pourcentage', 'ClientOfficeController::pourcentage_epargne');
+[ok]    $routes->get('/client-office/pourcentage-actuel/', 'ClientOfficeController::pourcentage_epargne_actuel');
+
+
+- Controller:
+    - ClientOfficeController.php:
+        1- Methode: pourcentage_epargne( id_user, pourcentage) : insertion de pourcentage_epargene pour un user
+        ```- Table pourcentage_epargne
+
+        2- Methode: pourcentage_epargne_actuel( id_user)
+        ```- retourne la derniere pourcentage epargne 
+
+        
+
+

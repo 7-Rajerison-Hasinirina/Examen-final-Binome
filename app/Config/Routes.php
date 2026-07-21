@@ -9,6 +9,11 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'OperateurController::index');
 $routes->post('login/valider', 'OperateurController::valider');
 
+
+// Pourcentage Epargne:
+$routes->post('/client-office/pourcentage', 'ClientOfficeController::pourcentage_epargne');
+$routes->get('/client-office/pourcentage-actuel/', 'ClientOfficeController::pourcentage_epargne_actuel');
+
 // Routes pour Client Office
 $routes->get('client-office', 'ClientOfficeController::index');
 $routes->get('client-office/solde', 'ClientOfficeController::solde');
