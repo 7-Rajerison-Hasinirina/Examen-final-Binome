@@ -7,6 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 $routes->get('/', 'OperateurController::index');
+$routes->get('produits', 'ProduitController::index');
 $routes->post('login/valider', 'OperateurController::valider');
 
 
